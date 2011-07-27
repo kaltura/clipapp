@@ -49,7 +49,7 @@ catch(Exception $e)
 				"overwrite_entry": <?php echo ($conf['overwrite_entry']) ? 'true' : 'false'; ?>
 		});
 		</script>
-		<!--<script src="../html5.kaltura/mwEmbed/mwEmbedLoader.php"></script>-->
+		<!--<script src="/html5.kaltura/mwEmbed/mwEmbedLoader.php"></script>-->
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 	</head>
 	<body>
@@ -64,7 +64,7 @@ catch(Exception $e)
 			<div class="left"><input type="button" id="setStartTime" value="Set In Time" /></div>
 			<div class="left right"><input type="button" id="setEndTime" value="Set Out Time" /></div>
 		</div>
-		<object id="clipper" name="clipper" type="application/x-shockwave-flash" wmode="opaque" allowNetworking="all" allowScriptAccess="always" height="<?php echo $conf['clipper']['height']; ?>" width="<?php echo $conf['clipper']['width']; ?>" bgcolor="#000000" data="<?php echo $clipperUrl; ?>"><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="opaque" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="<?php echo $clipperFlashvars; ?>" /><param name="movie" value="<?php echo $clipperUrl; ?>" /></object>
+		<object id="clipper" name="clipper" type="application/x-shockwave-flash" wmode="opaque" allowNetworking="all" allowScriptAccess="always" height="<?php echo $conf['clipper']['height']; ?>" width="<?php echo $conf['clipper']['width']; ?>" data="<?php echo $clipperUrl; ?>"><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="opaque" /><param name="bgcolor" value="#e4e4e4" /><param name="flashVars" value="<?php echo $clipperFlashvars; ?>" /><param name="movie" value="<?php echo $clipperUrl; ?>" /></object>
 		<br />
 		<div id="embed" class="form clearfix">
 			<p><?php echo $conf['save_message']; ?></p><br />
@@ -76,11 +76,11 @@ catch(Exception $e)
 		<div id="form" class="form clearfix">
 			<div class="item clearfix">
 				<label>Start Time:</label>
-				<input id="startTime" value="" /> <input id="setST" type="button" value="Set" />
+				<input id="startTime" value="" />
 			</div>
 			<div class="item clearfix">
 				<label>End Time:</label>
-				<input id="endTime" value="" /><input id="setET" type="button" value="Set" />
+				<input id="endTime" value="" />
 			</div>
 			<div class="item clearfix">
 				<label>Title:</label>

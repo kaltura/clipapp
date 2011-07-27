@@ -105,21 +105,6 @@ clipApp.clipper = {
 	}
 };
 
-clipApp.updateStartTime = function(clip) {
-	var val = (typeof clip === "object") ? clip.clipAttributes.offset : clip;
-	val = Math.floor( val );
-	clipApp.log('updateStartTime (' + val + ')');
-	$("#startTime").timeStepper( 'setValue', val );
-};
-
-clipApp.updateEndTime = function(clip) {
-	var val = (typeof clip === "object") ? (clip.clipAttributes.offset + clip.clipAttributes.duration) : clip;
-	if( val > 0 ) {
-		clipApp.log('updateEndTime (' + val + ')');
-		$("#endTime").timeStepper( 'setValue', val );
-	}
-};
-
 clipApp.getLength = function() {
 	return clipApp.vars.entry.duration;
 };
@@ -158,35 +143,60 @@ clipApp.createTimeSteppers = function() {
 	clipApp.log('Create Time Steppers');
 	$("#startTime").timeStepper( {
 		onChange: function( val ) {
-			//console.log('start time changed:' + val);
-			//clipApp.kClip.updateInTime( val );
+			console.log('start time changed:' + val);
+			
+			clipApp.kClip.removeJsListener("clipStartChanged", "clipApp.updateStartTime");
+			clipApp.kClip.removeJsListener("clipEndChanged", "clipApp.updateEndTime");
+			clipApp.setStartTime( val );
+			clipApp.kClip.addJsListener("clipStartChanged", "clipApp.updateStartTime");
+			clipApp.kClip.addJsListener("clipEndChanged", "clipApp.updateEndTime");
+			
 		}
 	} );
 	$("#endTime").timeStepper( {
 		onChange: function( val ) {
-			//console.log('end time changed:' + val);
-			//var length = ( val - $("#startTime").timeStepper( 'getValue' ) );
-			//clipApp.kClip.updateClipLength( length );
+			console.log('end time changed:' + val);
+			
+			clipApp.kClip.removeJsListener("clipStartChanged", "clipApp.updateStartTime");
+			clipApp.kClip.removeJsListener("clipEndChanged", "clipApp.updateEndTime");
+			clipApp.setEndTime( val );
+			clipApp.kClip.addJsListener("clipStartChanged", "clipApp.updateStartTime");
+			clipApp.kClip.addJsListener("clipEndChanged", "clipApp.updateEndTime");
+			
 		}
 	} );
+};
+
+clipApp.updateStartTime = function(clip) {
+	var val = (typeof clip === "object") ? clip.clipAttributes.offset : clip;
+	val = Math.floor( val );
+	clipApp.log('updateStartTime (' + val + ')');
+	$("#startTime").timeStepper( 'setValue', val );
+};
+
+clipApp.updateEndTime = function(clip) {
+	var val = (typeof clip === "object") ? (clip.clipAttributes.offset + clip.clipAttributes.duration) : clip;
+	if( val > 0 ) {
+		clipApp.log('updateEndTime (' + val + ')');
+		$("#endTime").timeStepper( 'setValue', val );
+	}
 };
 
 clipApp.setStartTime = function( val ) {
 
 	var currentClip = clipApp.kClip.getSelected();
-
 	var duration = currentClip.clipAttributes.duration - (val - currentClip.clipAttributes.offset);
 
 	if( val >= $("#endTime").timeStepper( 'getValue' ) ) {
-		alert('Start time cannot be bigger then End time. ')
+		alert('Start time cannot be bigger then End time. ');
 		return false;
 	}
 
-	clipApp.kClip.updateInTime( val );
-	clipApp.updateStartTime( val );
-
 	clipApp.kClip.updateClipLength( duration );
 	clipApp.updateEndTime( val + duration );
+	
+	clipApp.kClip.updateInTime( val );
+	clipApp.updateStartTime( val );
 
 	clipApp.kdp.sendNotification("doPause");
 
@@ -222,14 +232,6 @@ clipApp.activateButtons = function() {
 	$("#setEndTime").click( function() {
 		var currentTime = clipApp.kdp.evaluate('{video.player.currentTime}') * 1000;
 		clipApp.setEndTime( currentTime );
-	});
-
-	$("#setST").click( function() {
-		clipApp.setStartTime( $("#startTime").timeStepper( 'getValue' ) );
-	});
-
-	$("#setET").click( function() {
-		clipApp.setEndTime( $("#endTime").timeStepper( 'getValue' ) );
 	});
 
 	$("#delete").click( function() {

@@ -24,8 +24,10 @@
 	// Collection of internal methods
 	var _methods = {
 		timer: null,
-		getTarget: function( ) {
-			return curEl.find('.' + curTimeUnit);
+		getTarget: function( timeUnit, el ) {
+			var unit = (timeUnit) ? timeUnit : curTimeUnit;
+			el = ( el ) ? el : curEl;
+			return el.find('.' + unit);
 		},
 		setTimeUnit: function( timeUnit ) {
 			curTimeUnit = timeUnit;
@@ -59,8 +61,9 @@
 					break;
 			}
 		},
-		getResetNum: function() {
-			switch( curTimeUnit ) {
+		getResetNum: function( timeUnit ) {
+			var unit = (timeUnit) ? timeUnit : curTimeUnit;
+			switch( unit ) {
 				case units.ms:
 					return '000';
 					break;
@@ -70,59 +73,65 @@
 			}
 		},
 		increase: function() {
-				var val = parseFloat( this.getTarget().val() );
-				var newVal = val + this.getIncreaseNum();
+			var val = parseFloat( this.getTarget().val() );
+			var newVal = val + this.getIncreaseNum();
 
-				return this.update( newVal );
+			return this.update( newVal );
 		},
 		decrease: function() {
-				var val = parseFloat(  this.getTarget().val() );
-				var newVal = val - this.getIncreaseNum();
+			var val = parseFloat(  this.getTarget().val() );
+			var newVal = val - this.getIncreaseNum();
 
-				return this.update( newVal );
+			return this.update( newVal );
 		},
-		update: function( val ) {
-			//console.log( 'Update: '+curTimeUnit + ' - ' + val);
-			if( val >= this.getMaxTimeUnit() ) {
-				val = this.getMaxTimeUnit();
+		update: function( val, timeUnit, el ) {
+			var unit = (timeUnit) ? timeUnit : curTimeUnit;
+			el = ( el ) ? el : curEl;
+
+			if( val >= this.getMaxTimeUnit( unit ) ) {
+				val = this.getMaxTimeUnit( unit );
 			} else if( val <= 0 ) {
-				val = this.getResetNum();
+				val = this.getResetNum( unit );
 			}else {
-				val = this.addZero( val );
+				val = this.addZero( val, unit );
 			}
+
+			//console.log( 'Update: ' + unit + ' - ' + val, el);
 			
-			 this.getTarget().val( val );
+			this.getTarget( unit, el ).val( val );
 			 
-			 clearTimeout(_methods.timer);
-			 _methods.timer = setTimeout( function() {
-				_methods.updateTotal();
-			 }, 250);
+			clearTimeout(_methods.timer);
+			_methods.timer = setTimeout( function() {
+				_methods.updateTotal( el );
+			}, 250);
 
 			return this;
 		},
-		updateTotal: function() {
+		updateTotal: function( el ) {
 			var total = '';
-			curEl.find('input').each( function() {
+			el = ( el ) ? el : curEl;
+			el.find('input').each( function() {
 				total += this.value + ':';
 			});
 			total = total.substring(0, total.length-1);
 
-			var toUpdate = curEl.attr('id').replace('ts_', '');
+			var toUpdate = el.attr('id').replace('ts_', '');
 
 			if( $( '#' + toUpdate ).val() != total ) {
-				console.log( curEl.attr('id') + ' Update Total :: c: ' + $( '#' + toUpdate ).val() + ' n: ' + total );
+				//console.log( el.attr('id') + ' Update Total :: c: ' + $( '#' + toUpdate ).val() + ' n: ' + total );
 				$( '#' + toUpdate ).val( total );
 
-				var mySettings = curEl.data('settings');
+				var mySettings = el.data('settings');
 
 				if( typeof mySettings.onChange == "function" ) {
-					mySettings.onChange( methods.getValue( null, curEl ) );
+					mySettings.onChange( methods.getValue( null, el ) );
 				}
 			}
 		},
-		addZero: function( number ) {
+		addZero: function( number, timeUnit ) {
+			var unit = (timeUnit) ? timeUnit : curTimeUnit;
 			 var toAdd = '';
-			 if( (curTimeUnit == units.ms) && (number < 100) ) {
+			 if( (unit == units.ms) && (number < 100) ) {
 				 toAdd += '0';
 			 }
 			 if( number < 10 ) {
@@ -270,7 +279,7 @@
 		 */
 		setValue: function( val ) {
 			// Update current element
-			curEl = $('#ts_' + this.attr('id') );
+			var el = $('#ts_' + this.attr('id') );
 
 			var miliseconds = Math.floor( val % 1000 );
 			var seconds = Math.floor( val / 1000);
@@ -282,10 +291,10 @@
 
 			//console.log('(' +  this.attr('id') + ') Set Value: ' + val + ' = h:' + hours + ', m:' + minutes + ', s:' + seconds + ', ms:' + miliseconds);
 			
-			_methods.setTimeUnit( units.h ).update( hours );
-			_methods.setTimeUnit( units.m ).update( minutes );
-			_methods.setTimeUnit( units.s ).update( seconds );
-			_methods.setTimeUnit( units.ms ).update( miliseconds );
+			_methods.update( hours, units.h, el );
+			_methods.update( minutes, units.m, el );
+			_methods.update( seconds, units.s, el );
+			_methods.update( miliseconds, units.ms, el );
 
 			return true;
 		}
