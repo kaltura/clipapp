@@ -16,9 +16,19 @@ $clipperFlashvars = '&entry_id=' . $entryId . '&partner_id=' . $conf['partner_id
 $clipperFlashvars .= '&ks=' . $ks . '&show_add_delete_buttons=false&state=clippingState&jsReadyFunc=clipperReady';
 $clipperFlashvars .= '&max_allowed_rows=1&show_control_bar=true&show_message_box=false';
 
+if(!$entryId)
+	die("Missing entry id");
+
 // Load entry
-$entry = $client->baseEntry->get($entryId, null);
-$kdpUiconf = $client->uiConf->get($conf['kdp']['uiconf_id']);
+try
+{
+	$entry = $client->baseEntry->get($entryId, null);
+	$kdpUiconf = $client->uiConf->get($conf['kdp']['uiconf_id']);
+}
+catch(Exception $e)
+{
+	echo($e->getMessage());
+}
 
 ?>
 <html>

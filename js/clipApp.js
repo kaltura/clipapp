@@ -77,7 +77,6 @@ clipApp.player = {
 	},
 
 	updatePlayhead: function(val) {
-		clipApp.clipper.playHeadLocation = val;
 		val = Math.floor( val / 1000 );
 		clipApp.kdp.sendNotification("doSeek", val);
 		setTimeout(function() {
@@ -88,14 +87,17 @@ clipApp.player = {
 
 // Contains all clipper related functions
 clipApp.clipper = {
-	playHeadLocation: 0,
 	addClip: function() {
 		var video_length = clipApp.getLength();
 		var clip_length = ( (video_length * 10) / 100 ) * 1000;
-		clipApp.kClip.addClipAt(clipApp.clipper.playHeadLocation, clip_length);
+		var clip_offset = clipApp.kClip.getPlayheadLocation();
+		clipApp.kClip.addClipAt(clip_offset, clip_length);
 		clipApp.log('addClipAt (Length: ' + clip_length + ')');
-		clipApp.updateStartTime(clipApp.clipper.playHeadLocation);
-		clipApp.updateEndTime(clipApp.clipper.playHeadLocation + clip_length);
+		clipApp.updateStartTime(clip_offset);
+		clipApp.updateEndTime(clip_offset + clip_length);
+		setTimeout( function() {
+			clipApp.kdp.sendNotification("doPause");
+		}, 250);
 	},
 
 	updatePlayhead: function(val) {
@@ -106,14 +108,12 @@ clipApp.clipper = {
 clipApp.updateStartTime = function(clip) {
 	var val = (typeof clip === "object") ? clip.clipAttributes.offset : clip;
 	val = Math.floor( val );
-	console.log( clip );
 	clipApp.log('updateStartTime (' + val + ')');
 	$("#startTime").timeStepper( 'setValue', val );
 };
 
 clipApp.updateEndTime = function(clip) {
 	var val = (typeof clip === "object") ? (clip.clipAttributes.offset + clip.clipAttributes.duration) : clip;
-	console.log( clip );
 	if( val > 0 ) {
 		clipApp.log('updateEndTime (' + val + ')');
 		$("#endTime").timeStepper( 'setValue', val );
