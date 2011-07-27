@@ -38,8 +38,7 @@ $kdpUiconf = $client->uiConf->get($conf['kdp']['uiconf_id']);
 				"redirect_url": "<?php echo $conf['redirect_url']; ?>"
 		});
 		</script>
-		<script src="../html5.kaltura/mwEmbed/mwEmbedLoader.php"></script>
-		<link rel="stylesheet" type="text/css" href="css/jquery.scroller-1.0rc2.min.css" />
+		<!--<script src="../html5.kaltura/mwEmbed/mwEmbedLoader.php"></script>-->
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 	</head>
 	<body>
