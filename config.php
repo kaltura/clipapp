@@ -82,7 +82,7 @@ if( isset($_GET['config']) ) {
 	$configName = 'default';
 }
 
-if( $configName != 'default' && isset($config['configName']) ) {
+if( $configName != 'default' && isset($config[$configName]) ) {
 	$conf = array_merge( $config['default'], $config[$configName] );
 } else {
 	$conf = $config['default'];
