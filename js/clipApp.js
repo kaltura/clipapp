@@ -14,6 +14,7 @@ clipApp.vars = {
 	host: "www.kaltura.com",
 	redirect_save: false,
 	redirect_url: "http://www.kaltura.com/",
+	overwrite_entry: false,
 	debug: true
 };
 
@@ -87,10 +88,9 @@ clipApp.player = {
 
 // Contains all clipper related functions
 clipApp.clipper = {
-	addClip: function() {
-		var video_length = clipApp.getLength();
-		var clip_length = ( (video_length * 10) / 100 ) * 1000;
-		var clip_offset = clipApp.kClip.getPlayheadLocation();
+	addClip: function( start, end ) {
+		var clip_length = (end) ? end : ( ( (clipApp.getLength() * 10) / 100 ) * 1000 );
+		var clip_offset = (start) ? start : clipApp.kClip.getPlayheadLocation();
 		clipApp.kClip.addClipAt(clip_offset, clip_length);
 		clipApp.log('addClipAt (Length: ' + clip_length + ')');
 		clipApp.updateStartTime(clip_offset);
@@ -245,6 +245,10 @@ clipApp.activateButtons = function() {
 };
 
 clipApp.enableAddClip = function() {
+	if( clipApp.vars.overwrite_entry ) {
+		clipApp.log('Add new clip for trimming', (clipApp.getLength() * 1000) );
+		clipApp.clipper.addClip(0, (clipApp.getLength() * 1000) );
+	}
 	$("#newclip input").attr('disabled', false);
 };
 
@@ -308,7 +312,7 @@ clipApp.deleteClip = function() {
 	clipApp.kdp.sendNotification("doStop");
 
 	// Remove clip from clipper
-	clipApp.kClip.deleteSelected();
+	clipApp.kClip.deleteAll();
 
 	// Reset fields
 	$("#startTime").timeStepper( 'setValue', 0);

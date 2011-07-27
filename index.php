@@ -45,7 +45,8 @@ catch(Exception $e)
 				"ks": "<?php echo $ks;?>",
 				"kdp": <?php echo json_encode($kdpUiconf);?>,
 				"redirect_save": <?php echo ($conf['redirect_save']) ? 'true' : 'false'; ?>,
-				"redirect_url": "<?php echo $conf['redirect_url']; ?>"
+				"redirect_url": "<?php echo $conf['redirect_url']; ?>",
+				"overwrite_entry": <?php echo ($conf['overwrite_entry']) ? 'true' : 'false'; ?>
 		});
 		</script>
 		<!--<script src="../html5.kaltura/mwEmbed/mwEmbedLoader.php"></script>-->
@@ -56,7 +57,9 @@ catch(Exception $e)
 		<div id="force-html5"><a href="?forceMobileHTML5">HTML5</a></div>
 		<object id="kdp3" name="kdp3" type="application/x-shockwave-flash" wmode="opaque" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="<?php echo $conf['kdp']['height']; ?>" width="<?php echo $conf['kdp']['width']; ?>" bgcolor="#000000" resource="<?php echo $kdpUrl; ?>" data="<?php echo $kdpUrl; ?>"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="opaque" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="&steamerType=rtmp" /><param name="movie" value="<?php echo $kdpUrl; ?>" /></object>
 		<br />
-		<div id="newclip"><input type="button" value="New Clip" disabled="disabled" /></div>
+		<?php if( $conf['overwrite_entry'] == false ) { ?>
+			<div id="newclip"><input type="button" value="New Clip" disabled="disabled" /></div>
+		<?php } ?>
 		<div id="timers" class="clearfix">
 			<div class="left"><input type="button" id="setStartTime" value="Set In Time" /></div>
 			<div class="left right"><input type="button" id="setEndTime" value="Set Out Time" /></div>
