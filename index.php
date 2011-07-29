@@ -30,6 +30,11 @@ catch(Exception $e)
 	echo($e->getMessage());
 }
 
+$class = '';
+if( $conf['overwrite_entry'] == true ) {
+	$class = 'hide';
+}
+
 ?>
 <html>
 	<head>
@@ -39,6 +44,7 @@ catch(Exception $e)
 		<script src="js/clipApp.js"></script>
 		<script>
 		clipApp.init( {
+				"config": "<?php echo htmlspecialchars($_GET['config']);?>",
 				"host": "<?php echo $conf['host'];?>",
 				"partner_id": "<?php echo $conf['partner_id'];?>",
 				"entry": <?php echo json_encode($entry);?>,
@@ -57,9 +63,7 @@ catch(Exception $e)
 		<div id="force-html5"><a href="?forceMobileHTML5">HTML5</a></div>
 		<object id="kdp3" name="kdp3" type="application/x-shockwave-flash" wmode="opaque" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" height="<?php echo $conf['kdp']['height']; ?>" width="<?php echo $conf['kdp']['width']; ?>" bgcolor="#000000" resource="<?php echo $kdpUrl; ?>" data="<?php echo $kdpUrl; ?>"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="opaque" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="&steamerType=rtmp" /><param name="movie" value="<?php echo $kdpUrl; ?>" /></object>
 		<br />
-		<?php if( $conf['overwrite_entry'] == false ) { ?>
-			<div id="newclip"><input type="button" value="New Clip" disabled="disabled" /></div>
-		<?php } ?>
+		<div id="newclip" class="<?php echo $class; ?>"><input type="button" value="New Clip" disabled="disabled" /></div>
 		<div id="timers" class="clearfix">
 			<div class="left"><input type="button" id="setStartTime" value="Set In Time" /></div>
 			<div class="left right"><input type="button" id="setEndTime" value="Set Out Time" /></div>
@@ -91,6 +95,6 @@ catch(Exception $e)
 				<textarea id="entry_desc"><?php echo $entry->description; ?></textarea><br /><br />
 			</div>
 		</div>
-		<div id="actions"><input id="delete" type="button" value="Delete" />&nbsp;<input id="preview" type="button" value=" Preview " />&nbsp;<input id="save" type="button" value="Save" /><img id="loading" src="http://local.trunk/lib/images/kmc/loader.gif" /></div>
+		<div id="actions"><input id="delete" type="button" value="Delete" />&nbsp;<input id="preview" type="button" value=" Preview " />&nbsp;<input id="save" type="button" value="Save" /></div>
 	</body>
 </html>

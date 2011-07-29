@@ -28,6 +28,7 @@ var jsCallbackReady = function( videoId ) {
 	clipApp.kdp.addJsListener("mediaReady", "clipApp.player.doFirstPlay");
 	clipApp.kdp.addJsListener("playerPlayed", "clipApp.player.playerPlaying");
 	clipApp.kdp.addJsListener("playerPaused", "clipApp.player.playerPaused");
+	//clipApp.kdp.addJsListener("doSeek", "clipApp.resetPreview");
 };
 
 var clipperReady = function() {
@@ -184,13 +185,13 @@ clipApp.updateEndTime = function(clip) {
 
 clipApp.setStartTime = function( val ) {
 
-	var currentClip = clipApp.kClip.getSelected();
-	var duration = currentClip.clipAttributes.duration - (val - currentClip.clipAttributes.offset);
-
 	if( val >= $("#endTime").timeStepper( 'getValue' ) ) {
 		alert('Start time cannot be bigger then End time. ');
 		return false;
 	}
+	
+	var currentClip = clipApp.kClip.getSelected();
+	var duration = currentClip.clipAttributes.duration - (val - currentClip.clipAttributes.offset);
 
 	clipApp.kClip.updateClipLength( duration );
 	clipApp.updateEndTime( val + duration );
@@ -242,7 +243,7 @@ clipApp.activateButtons = function() {
 	});
 
 	$("#save").click( function() {
-		clipApp.doSave();
+		return clipApp.doSave();
 	});
 };
 
@@ -266,6 +267,11 @@ clipApp.doPreview = function() {
 	clipApp.kdp.sendNotification("doPlay");
 };
 
+clipApp.resetPreview = function() { 
+	clipApp.kdp.setKDPAttribute("mediaProxy", "mediaPlayFrom", 0 );
+	clipApp.kdp.setKDPAttribute("mediaProxy", "mediaPlayTo", clipApp.getLength() );
+};
+
 clipApp.showEmbed = function( entry_id ) {
 	// Hide current elements
 	clipApp.deleteClip();
@@ -279,9 +285,11 @@ clipApp.showEmbed = function( entry_id ) {
 };
 
 clipApp.doSave = function() {
-	// Show Loading
-	$("#loading").fadeIn();
-
+	if( ($("#endTime").timeStepper( 'getValue' ) - $("#startTime").timeStepper( 'getValue' )) <= 100 ) {
+		alert('Clip duration must be bigger then 100ms.');
+		return false;
+	}
+	
 	// Get Params
 	var params = {
 		'entryId': clipApp.vars.entry.id,
@@ -291,22 +299,31 @@ clipApp.doSave = function() {
 		'end': $("#endTime").timeStepper( 'getValue' )
 	};
 
+	var saveUrl = 'save.php';
+	if( clipApp.vars.config.length > 0 ) {
+		saveUrl += '?config=' + clipApp.vars.config;
+	}
+
 	// Make the request
 	$.ajax({
-		url: "save.php",
+		url: saveUrl,
 		type: "post",
 		data: params,
 		dataType: "json",
 		success: function(res) {
 			$("#loading").fadeOut();
+			if( res.error ) {
+				alert(res.error);
+				return false;
+			}
 			if( clipApp.vars.redirect_save === true ) {
 				window.location.href = clipApp.vars.redirect_url;
 			} else {
 				clipApp.showEmbed(res.id);
+				return true;
 			}
 		}
 	});
-
 };
 
 clipApp.deleteClip = function() {
@@ -314,11 +331,9 @@ clipApp.deleteClip = function() {
 	clipApp.kdp.sendNotification("doStop");
 
 	// Remove clip from clipper
-	clipApp.kClip.deleteAll();
+	clipApp.kClip.deleteSelected();
 
 	// Reset fields
-	$("#startTime").timeStepper( 'setValue', 0);
-	$("#endTime").timeStepper( 'setValue', 0);
 	$("#entry_title").val('');
 	$("#entry_desc").val('');
 

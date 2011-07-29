@@ -34,10 +34,13 @@ $entry->description		= $entryDesc;
 
 if( $overwrite ) {
 	// Trim Entry
-	$resultEntry = $client->media->update($entry);
-	$resultEntry = $client->media->updateContent($resultEntry->id, $resource);
+	$resultEntry = $client->media->update($entryId, $entry);
+	try {
+		$resultEntry = $client->media->updateContent($resultEntry->id, $resource);
+	} catch( Exception $e ){
+		die('{"error": "' . $e->getMessage() . '"}');
+	}
 } else {
-	// Set entry type to video
 	$entry->mediaType				= KalturaMediaType::VIDEO;
 
 	// New Clip

@@ -70,20 +70,3 @@ $config['default']['clipper'] = array(
 	'width' => 640,
 	'height' => 150
 );
-
-/* FROM THIS POINT DO NOT EDIT THE CODE */
-
-if( file_exists('config.local.php') )
-	include('config.local.php');
-
-if( isset($_GET['config']) ) {
-	$configName = $_GET['config'];
-} else {
-	$configName = 'default';
-}
-
-if( $configName != 'default' && isset($config[$configName]) ) {
-	$conf = array_merge( $config['default'], $config[$configName] );
-} else {
-	$conf = $config['default'];
-}
