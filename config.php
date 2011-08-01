@@ -57,16 +57,8 @@ play once the clip is ready.';
 /* Use HTML5 Embed code: true/false */
 $config['default']['html5_embed'] = true;
 
-/* KDP Data */
-$config['default']['kdp'] = array(
-	'uiconf_id' => '',
-	'width' => 640,
-	'height' => 380
-);
+/* KDP UIConf ID */
+$config['default']['kdp_uiconf_id'] = 0;
 
-/* Clipper Data */
-$config['default']['clipper'] = array(
-	'uiconf_id' => '',
-	'width' => 640,
-	'height' => 150
-);
+/* Clipper UIConf ID */
+$config['default']['clipper_uiconf_id'] = 0;

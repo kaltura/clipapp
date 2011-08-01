@@ -28,7 +28,7 @@ var jsCallbackReady = function( videoId ) {
 	clipApp.kdp.addJsListener("mediaReady", "clipApp.player.doFirstPlay");
 	clipApp.kdp.addJsListener("playerPlayed", "clipApp.player.playerPlaying");
 	clipApp.kdp.addJsListener("playerPaused", "clipApp.player.playerPaused");
-	//clipApp.kdp.addJsListener("doSeek", "clipApp.resetPreview");
+	clipApp.kdp.addJsListener("doSeek", "clipApp.resetPreview");
 };
 
 var clipperReady = function() {
@@ -39,6 +39,7 @@ var clipperReady = function() {
 	clipApp.kClip.addJsListener("entryReady", "clipApp.enableAddClip");
 	clipApp.kClip.addJsListener("clipAdded", "clipApp.addClipForm");
 	clipApp.kClip.addJsListener("clipperError", "clipApp.showError");
+	clipApp.kClip.addJsListener("playheadDragDrop", "clipApp.player.updatePlayhead")
 };
 
 /* Init the App */
@@ -52,7 +53,6 @@ $(function() {
 
 // Contains all player related functions
 clipApp.player = {
-
 	doFirstPlay: function() {
 		clipApp.log('doFirstPlay');
 		clipApp.player.firstLoad = true;
@@ -68,6 +68,7 @@ clipApp.player = {
 				clipApp.kdp.sendNotification("doPause");
 			}, 50);
 		}
+		clipApp.vars.removeBlackScreen = true;
 
 		clipApp.kClip.removeJsListener("playheadUpdated", "clipApp.player.updatePlayhead");
 		clipApp.kdp.addJsListener("playerUpdatePlayhead", "clipApp.clipper.updatePlayhead");
@@ -117,10 +118,10 @@ clipApp.showError = function(error) {
 clipApp.getEmbedCode = function(entry_id) {
 
 	var unique_id = clipApp.getUniqueId();
-	var entry_url = 'http://' + clipApp.vars.host + '/kwidget/wid/_' + clipApp.vars.partner_id + '/uiconf_id/' + clipApp.vars.kdp.id + '/entry_id/' + entry_id;
+	var entry_url = 'http://' + clipApp.vars.host + '/kwidget/wid/_' + clipApp.vars.partner_id + '/uiconf_id/' + clipApp.vars.kdp_uiconf_id + '/entry_id/' + entry_id;
 	
 	var embed_code = '<object id="kaltura_player_' + unique_id + '" name="kaltura_player_' + unique_id + '" type="application/x-shockwave-flash" allowFullScreen="true"' +
-				' allowNetworking="all" allowScriptAccess="always" height="' + clipApp.vars.kdp.height + '" width="' + clipApp.vars.kdp.width + '" bgcolor="#000000"' +
+				' allowNetworking="all" allowScriptAccess="always" height="330" width="400" bgcolor="#000000"' +
 				' resource="' + entry_url + '" data="' + entry_url + '"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" />' +
 				' <param name="allowScriptAccess" value="always" /><param name="bgcolor" value="#000000" /><param name="movie" value="' + entry_url + '" /></object>';
 
@@ -133,11 +134,23 @@ clipApp.getUniqueId = function() {
 };
 
 clipApp.addClipForm = function() {
-	$("#newclip").hide();
+	if( $("#newclip").find('.disable').length == 0 ) {
+		$("#newclip").prepend( clipApp.disableDiv() );
+	}
+	$("#fields").show().find('.disable').remove();
+	$("#actions").find('.disable').remove();
+	
+	if( clipApp.vars.overwrite_entry ) {
+		$("#delete").remove();
+		$(".seperator").remove();
+	}
+
+	$("#save").find('.disable').remove();
 	$("#embed").hide();
-	$("#timers").fadeIn();
-	$("#form").fadeIn();
-	$("#actions").fadeIn();
+};
+
+clipApp.disableDiv = function() {
+	return $('<div />').addClass('disable');
 };
 
 clipApp.createTimeSteppers = function() {
@@ -219,7 +232,7 @@ clipApp.setEndTime = function( val ) {
 clipApp.activateButtons = function() {
 	clipApp.log('Activate Buttons');
 
-	$("#newclip input").click( function() {
+	$("#newclip a").click( function() {
 		clipApp.clipper.addClip();
 	});
 
@@ -242,8 +255,9 @@ clipApp.activateButtons = function() {
 		return false;
 	});
 
-	$("#save").click( function() {
-		return clipApp.doSave();
+	$("#save a").click( function() {
+		clipApp.doSave();
+		return false;
 	});
 };
 
@@ -251,8 +265,9 @@ clipApp.enableAddClip = function() {
 	if( clipApp.vars.overwrite_entry ) {
 		clipApp.log('Add new clip for trimming', (clipApp.getLength() * 1000) );
 		clipApp.clipper.addClip(0, (clipApp.getLength() * 1000) );
+	} else {
+		$("#newclip").find('.disable').remove();
 	}
-	$("#newclip input").attr('disabled', false);
 };
 
 clipApp.doPreview = function() {
@@ -262,14 +277,19 @@ clipApp.doPreview = function() {
 	clipApp.log('Start Time: ' + startTime + ', End Time: ' + endTime );
 
 	clipApp.kdp.sendNotification("doStop");
+	clipApp.kdp.setKDPAttribute("blackScreen", "visible", "true" );
 	clipApp.kdp.setKDPAttribute("mediaProxy", "mediaPlayFrom", startTime );
 	clipApp.kdp.setKDPAttribute("mediaProxy", "mediaPlayTo", endTime );
 	clipApp.kdp.sendNotification("doPlay");
+
+	clipApp.vars.removeBlackScreen = false;
 };
 
-clipApp.resetPreview = function() { 
-	clipApp.kdp.setKDPAttribute("mediaProxy", "mediaPlayFrom", 0 );
-	clipApp.kdp.setKDPAttribute("mediaProxy", "mediaPlayTo", clipApp.getLength() );
+clipApp.resetPreview = function() {
+	if( clipApp.vars.removeBlackScreen ) {
+		console.log('resetPreview');
+		clipApp.kdp.setKDPAttribute("blackScreen", "visible", "false" );
+	}
 };
 
 clipApp.showEmbed = function( entry_id ) {
@@ -281,7 +301,9 @@ clipApp.showEmbed = function( entry_id ) {
 	$("#embedcode").val( clipApp.getEmbedCode( entry_id ) );
 
 	// Show embed code
-	$("#embed").fadeIn();
+	$("#fields").hide();
+	$("#newclip").find('.disable').remove();
+	$("#embed").show();
 };
 
 clipApp.doSave = function() {
@@ -289,6 +311,13 @@ clipApp.doSave = function() {
 		alert('Clip duration must be bigger then 100ms.');
 		return false;
 	}
+
+	$("#loader").fadeIn();
+
+	$("#newclip").prepend( clipApp.disableDiv() );
+	$("#fields").prepend( clipApp.disableDiv() );
+	$("#actions").prepend( clipApp.disableDiv() );
+	$("#save").prepend( clipApp.disableDiv() );
 	
 	// Get Params
 	var params = {
@@ -301,7 +330,7 @@ clipApp.doSave = function() {
 
 	var saveUrl = 'save.php';
 	if( clipApp.vars.config.length > 0 ) {
-		saveUrl += '?config=' + clipApp.vars.config;
+		saveUrl += '?config=' + clipApp.vars.config + '&partnerId=' + clipApp.vars.partner_id + '&kclipUiconf=' + clipApp.vars.kclip_uiconf_id + '&kdpUiconf=' + clipApp.vars.kdp_uiconf_id + '&mode=' + ((clipApp.vars.overwrite_entry) ? 'trim' : 'clip');
 	}
 
 	// Make the request
@@ -311,7 +340,7 @@ clipApp.doSave = function() {
 		data: params,
 		dataType: "json",
 		success: function(res) {
-			$("#loading").fadeOut();
+			$("#loader").fadeOut();
 			if( res.error ) {
 				alert(res.error);
 				return false;
@@ -334,13 +363,15 @@ clipApp.deleteClip = function() {
 	clipApp.kClip.deleteSelected();
 
 	// Reset fields
-	$("#entry_title").val('');
-	$("#entry_desc").val('');
+	$("#entry_title").val( clipApp.vars.entry.name );
+	$("#entry_desc").val( clipApp.vars.entry.description );
 
-	$("#newclip").fadeIn();
-	$("#timers").hide();
-	$("#form").hide();
-	$("#actions").hide();
+	if( !clipApp.vars.overwrite_entry ) {
+		$("#newclip").find('.disable').remove();
+	}
+	$("#fields").prepend( clipApp.disableDiv() );
+	$("#actions").prepend( clipApp.disableDiv() );
+	$("#save").prepend( clipApp.disableDiv() );	
 };
 
 clipApp.isIpad = function(){

@@ -160,7 +160,7 @@
 		addHTML: function( el ) {
 
 			var $colons = $('<span />').addClass('colons').text(':');
-			var $controls = $('<div />').addClass('controls').append( $('<span />').addClass('plus').text('+'), $('<span />').addClass('minus').text('-') );
+			var $controls = $('<div />').addClass('controls').append( $('<span />').addClass('plus'), $('<span />').addClass('minus') );
 
 			var $timeStepper = $('<div />').attr('id', 'ts_' + el.id ).addClass('time-stepper').append(
 				$('<input />').addClass( units.h ).val('00'),
