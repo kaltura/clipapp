@@ -39,6 +39,7 @@ var clipperReady = function() {
 	clipApp.kClip.addJsListener("entryReady", "clipApp.enableAddClip");
 	clipApp.kClip.addJsListener("clipAdded", "clipApp.addClipForm");
 	clipApp.kClip.addJsListener("clipperError", "clipApp.showError");
+	clipApp.kClip.addJsListener("playheadDragStart", "clipApp.clipper.dragStarted");
 	clipApp.kClip.addJsListener("playheadDragDrop", "clipApp.player.updatePlayhead")
 };
 
@@ -80,6 +81,11 @@ clipApp.player = {
 	},
 
 	updatePlayhead: function(val) {
+		clipApp.clipper.dragging = false;
+		if( clipApp.clipper.dragging === false ) {
+			clipApp.kClip.addJsListener("playheadUpdated", "clipApp.player.updatePlayhead");
+		}
+
 		val = Math.floor( val / 1000 );
 		clipApp.kdp.sendNotification("doSeek", val);
 		setTimeout(function() {
@@ -90,6 +96,7 @@ clipApp.player = {
 
 // Contains all clipper related functions
 clipApp.clipper = {
+	dragging: false,
 	addClip: function( start, end ) {
 		var clip_length = (end) ? end : ( ( (clipApp.getLength() * 10) / 100 ) * 1000 );
 		var clip_offset = (start) ? start : clipApp.kClip.getPlayheadLocation();
@@ -104,6 +111,10 @@ clipApp.clipper = {
 
 	updatePlayhead: function(val) {
 		clipApp.kClip.scrollToPoint(val * 1000);
+	},
+	dragStarted: function() {
+		clipApp.clipper.dragging = true;
+		clipApp.kClip.removeJsListener("playheadUpdated", "clipApp.player.updatePlayhead");
 	}
 };
 
@@ -157,26 +168,20 @@ clipApp.createTimeSteppers = function() {
 	clipApp.log('Create Time Steppers');
 	$("#startTime").timeStepper( {
 		onChange: function( val ) {
-			console.log('start time changed:' + val);
-			
 			clipApp.kClip.removeJsListener("clipStartChanged", "clipApp.updateStartTime");
 			clipApp.kClip.removeJsListener("clipEndChanged", "clipApp.updateEndTime");
 			clipApp.setStartTime( val );
 			clipApp.kClip.addJsListener("clipStartChanged", "clipApp.updateStartTime");
 			clipApp.kClip.addJsListener("clipEndChanged", "clipApp.updateEndTime");
-			
 		}
 	} );
 	$("#endTime").timeStepper( {
 		onChange: function( val ) {
-			console.log('end time changed:' + val);
-			
 			clipApp.kClip.removeJsListener("clipStartChanged", "clipApp.updateStartTime");
 			clipApp.kClip.removeJsListener("clipEndChanged", "clipApp.updateEndTime");
 			clipApp.setEndTime( val );
 			clipApp.kClip.addJsListener("clipStartChanged", "clipApp.updateStartTime");
 			clipApp.kClip.addJsListener("clipEndChanged", "clipApp.updateEndTime");
-			
 		}
 	} );
 };
@@ -199,7 +204,7 @@ clipApp.updateEndTime = function(clip) {
 clipApp.setStartTime = function( val ) {
 
 	if( val >= $("#endTime").timeStepper( 'getValue' ) ) {
-		alert('Start time cannot be bigger then End time. ');
+		alert('Start time cannot be bigger than End time.');
 		return false;
 	}
 	
@@ -219,7 +224,7 @@ clipApp.setStartTime = function( val ) {
 
 clipApp.setEndTime = function( val ) {
 	if( val <= $("#startTime").timeStepper( 'getValue' ) ) {
-		alert('End time cannot be smaller then Start time');
+		alert('End time cannot be smaller than Start time');
 		return false;
 	}
 	var length = ( val - $("#startTime").timeStepper( 'getValue' ) );
@@ -265,9 +270,8 @@ clipApp.enableAddClip = function() {
 	if( clipApp.vars.overwrite_entry ) {
 		clipApp.log('Add new clip for trimming', (clipApp.getLength() * 1000) );
 		clipApp.clipper.addClip(0, (clipApp.getLength() * 1000) );
-	} else {
-		$("#newclip").find('.disable').remove();
 	}
+	$("#newclip").find('.disable').remove();
 };
 
 clipApp.doPreview = function() {
@@ -285,11 +289,13 @@ clipApp.doPreview = function() {
 	clipApp.vars.removeBlackScreen = false;
 };
 
-clipApp.resetPreview = function() {
+clipApp.resetPreview = function(val) {
 	if( clipApp.vars.removeBlackScreen ) {
-		console.log('resetPreview');
+		clipApp.log('resetPreview');
 		clipApp.kdp.setKDPAttribute("blackScreen", "visible", "false" );
 	}
+	//clipApp.log(val * 1000);
+	//clipApp.clipper.updatePlayhead(val * 1000);
 };
 
 clipApp.showEmbed = function( entry_id ) {
@@ -322,6 +328,7 @@ clipApp.doSave = function() {
 	// Get Params
 	var params = {
 		'entryId': clipApp.vars.entry.id,
+		'mediaType': clipApp.vars.entry.mediaType,
 		'name': $("#entry_title").val(),
 		'desc': $("#entry_desc").val(),
 		'start': $("#startTime").timeStepper( 'getValue' ),

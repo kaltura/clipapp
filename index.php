@@ -29,6 +29,14 @@ catch(Exception $e)
 	echo($e->getMessage());
 }
 
+if( $conf['overwrite_entry'] ){
+	$save_message = $conf['trim_save_message'];
+	$form_title = 'Use the trimming timeline below or enter exact in and out times';
+} else {
+	$save_message = $conf['clip_save_message'];
+	$form_title = '<a href="#">Add New Clip</a>';
+}
+
 ?>
 <html>
 	<head>
@@ -58,13 +66,15 @@ catch(Exception $e)
 		<div id="wrapper">
 			<object id="kdp3" name="kdp3" type="application/x-shockwave-flash" wmode="window" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" bgcolor="#000000" resource="<?php echo $kdpUrl; ?>" data="<?php echo $kdpUrl; ?>"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="window" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="&steamerType=rtmp" /><param name="movie" value="<?php echo $kdpUrl; ?>" /></object>
 			<div id="form" class="form clearfix">
-				<div id="newclip"><div class="disable"></div><img id="loader" src="images/loader.gif" alt="Saving..." /><a href="#">Add New Clip</a></div>
+				<div id="newclip"><div class="disable"></div><img id="loader" src="images/loader.gif" alt="Saving..." /><?php echo $form_title; ?></div>
 				<div id="embed" class="form clearfix">
-					<p><?php echo $conf['save_message']; ?></p><br />
+					<p><?php echo $save_message; ?></p><br />
+					<?php if( $conf['show_embed'] === true ) { ?>
 					<div class="item clearfix">
 						<label>Embed:</label>
 						<input id="embedcode" type="text" value="" />
 					</div><br />
+					<?php } ?>
 				</div>
 				<div id="fields">
 					<div class="disable"></div>

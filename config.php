@@ -50,9 +50,16 @@ $config['default']['redirect_save'] = false;
 /* Redirect URL if 'redirect_save' is true */
 $config['default']['redirect_url'] = 'http://www.kaltura.com';
 
-/* Message the will appear after the user click 'Save' button */
-$config['default']['save_message'] = 'A new clip is now being created. This might take a few minutes. You can copy the embed code and the video will
+/* Message the will appear after the user click 'Save' button - Clip mode */
+$config['default']['clip_save_message'] = 'A new clip is now being created. This might take a few minutes. You can copy the embed code and the video will
 play once the clip is ready.';
+
+/* Message the will appear after the user click 'Save' button - Trim mode */
+$config['default']['trim_save_message'] = 'The trimmed video is now converting. This might take a few mintues. You can copy the embed code and the video will
+play once the clip is ready.';
+
+/* Show embed code after saving: true/false */
+$config['default']['show_embed'] = true;
 
 /* Use HTML5 Embed code: true/false */
 $config['default']['html5_embed'] = true;

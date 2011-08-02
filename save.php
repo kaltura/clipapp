@@ -40,8 +40,8 @@ if( $overwrite ) {
 	} catch( Exception $e ){
 		die('{"error": "' . $e->getMessage() . '"}');
 	}
-} else {
-	$entry->mediaType				= KalturaMediaType::VIDEO;
+} else {;
+	$entry->mediaType = intval($_POST['mediaType']);
 
 	// New Clip
 	$resultEntry = $client->media->add($entry);
