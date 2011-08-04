@@ -197,6 +197,7 @@ clipApp.updateStartTime = function(clip) {
 	val = Math.floor( val );
 	clipApp.log('updateStartTime (' + val + ')');
 	$("#startTime").timeStepper( 'setValue', val );
+	clipApp.vars.lastStartTime = val;
 };
 
 clipApp.updateEndTime = function(clip) {
@@ -204,6 +205,7 @@ clipApp.updateEndTime = function(clip) {
 	if( val > 0 ) {
 		clipApp.log('updateEndTime (' + val + ')');
 		$("#endTime").timeStepper( 'setValue', val );
+		clipApp.vars.lastEndTime = val;
 	}
 };
 
@@ -234,18 +236,13 @@ clipApp.setStartTime = function( val ) {
 		$("#startTime").timeStepper( 'setValue', clipApp.vars.lastStartTime );
 		return false;
 	}
-
-	clipApp.vars.lastStartTime = $("#startTime").timeStepper( 'getValue' );
 	
 	var currentClip = clipApp.kClip.getSelected();
 	var duration = currentClip.clipAttributes.duration - (val - currentClip.clipAttributes.offset);
 
-	clipApp.kClip.updateClipLength( duration );
+	clipApp.kClip.updateClipAttributes( { offset: val, duration: duration} );
 	clipApp.updateEndTime( val + duration );
-	
-	clipApp.kClip.updateInTime( val );
 	clipApp.updateStartTime( val );
-
 	clipApp.kdp.sendNotification("doPause");
 
 	return true;
@@ -257,10 +254,9 @@ clipApp.setEndTime = function( val ) {
 		return false;
 	}
 
-	clipApp.vars.lastEndTime = $("#endTime").timeStepper( 'getValue' );
-	
+	var currentClip = clipApp.kClip.getSelected();
 	var length = ( val - $("#startTime").timeStepper( 'getValue' ) );
-	clipApp.kClip.updateClipLength(length);
+	clipApp.kClip.updateClipAttributes( { offset: currentClip.clipAttributes.offset, duration: length} );
 	clipApp.updateEndTime( val );
 	clipApp.kdp.sendNotification("doPause");
 	return true;
@@ -367,7 +363,14 @@ clipApp.doSave = function() {
 
 	var saveUrl = 'save.php';
 	if( clipApp.vars.config.length > 0 ) {
-		saveUrl += '?config=' + clipApp.vars.config + '&partnerId=' + clipApp.vars.partner_id + '&kclipUiconf=' + clipApp.vars.kclip_uiconf_id + '&kdpUiconf=' + clipApp.vars.kdp_uiconf_id + '&mode=' + ((clipApp.vars.overwrite_entry) ? 'trim' : 'clip');
+		var queryString = $.param( {
+			'config': clipApp.vars.config,
+			'partnerId': clipApp.vars.partner_id,
+			'kclipUiconf': clipApp.vars.kclip_uiconf_id,
+			'kdpUiconf': clipApp.vars.kdp_uiconf_id,
+			'mode': ((clipApp.vars.overwrite_entry) ? 'trim' : 'clip')
+		} );
+		saveUrl += '?' + queryString;
 	}
 
 	// Make the request
@@ -380,13 +383,11 @@ clipApp.doSave = function() {
 			$("#loader").fadeOut();
 			if( res.error ) {
 				alert(res.error);
-				return false;
 			}
 			if( clipApp.vars.redirect_save === true ) {
 				window.location.href = clipApp.vars.redirect_url;
 			} else {
 				clipApp.showEmbed(res.id);
-				return true;
 			}
 		}
 	});
@@ -409,8 +410,4 @@ clipApp.deleteClip = function() {
 	$("#fields").prepend( clipApp.disableDiv() );
 	$("#actions").prepend( clipApp.disableDiv() );
 	$("#save").prepend( clipApp.disableDiv() );	
-};
-
-clipApp.isIpad = function(){
-	return ( navigator.userAgent.indexOf('iPad') != -1 );
 };
