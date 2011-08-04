@@ -8,6 +8,7 @@
 	// Hold the current time unit field
 	var curTimeUnit = 'miliseconds';
 	var curEl = false;
+	var keydownBind = false;
 
 	// Contains all default settings
 	var defaults = {
@@ -205,20 +206,24 @@
 
 					_methods.setTimeUnit( $( this ).attr( 'class' ) );
 					curEl = $(this).parent();
-					
-					$(this).bind('keydown.ts', function( e ) {
-						// If user press up or left increase the number
-						if (e.keyCode == 37 || e.keyCode == 38) {
-							_methods.increase();
-						}
+					if( !keydownBind ) {
+						$(this).bind('keydown.ts', function( e ) {
 
-						// If user press down or right decrease the number
-						if (e.keyCode == 39 || e.keyCode == 40) {
-							_methods.decrease();
-						}
-					});
+							// If user press up or left increase the number
+							if (e.keyCode == 37 || e.keyCode == 38) {
+								_methods.increase();
+							}
+
+							// If user press down or right decrease the number
+							if (e.keyCode == 39 || e.keyCode == 40) {
+								_methods.decrease();
+							}
+						});
+						keydownBind = true;
+					}
 
 				}).bind('blur.ts', function() {
+					keydownBind = false;
 					$(this).unbind('keydown.ts');
 				}).bind('change.ts', function() {
 					_methods.update( this.value );

@@ -15,6 +15,7 @@ clipApp.vars = {
 	redirect_save: false,
 	redirect_url: "http://www.kaltura.com/",
 	overwrite_entry: false,
+	updateClipperPlayhead: true,
 	debug: true
 };
 
@@ -87,6 +88,7 @@ clipApp.player = {
 		}
 
 		val = Math.floor( val / 1000 );
+		clipApp.vars.updateClipperPlayhead = false;
 		clipApp.kdp.sendNotification("doSeek", val);
 		setTimeout(function() {
 			clipApp.kdp.sendNotification("doPause");
@@ -110,7 +112,11 @@ clipApp.clipper = {
 	},
 
 	updatePlayhead: function(val) {
-		clipApp.kClip.scrollToPoint(val * 1000);
+		if( clipApp.vars.updateClipperPlayhead === true ) {
+			clipApp.kClip.scrollToPoint(val * 1000);
+		} else {
+			clipApp.vars.updateClipperPlayhead = true;
+		}
 	},
 	dragStarted: function() {
 		clipApp.clipper.dragging = true;
@@ -201,12 +207,35 @@ clipApp.updateEndTime = function(clip) {
 	}
 };
 
-clipApp.setStartTime = function( val ) {
+clipApp.checkClipDuration = function( val, type ) {
 
-	if( val >= $("#endTime").timeStepper( 'getValue' ) ) {
-		alert('Start time cannot be bigger than End time.');
+	var minLength = 0;
+	if( type == 'start' ) {
+		minLength = $("#endTime").timeStepper( 'getValue' ) - val;
+	} else if( type == 'end' )	 {
+		minLength = val - $("#startTime").timeStepper( 'getValue' );
+	}
+	
+	if( minLength <= 100 ) {
+		alert('Clip duration must be at least 100ms');
 		return false;
 	}
+
+	if( val > (clipApp.getLength()) * 1000 ) {
+		alert('End time cannot be bigger than entry duration.');
+		return false;
+	}
+
+	return true;
+};
+
+clipApp.setStartTime = function( val ) {
+	if( !clipApp.checkClipDuration( val, 'start') ) {
+		$("#startTime").timeStepper( 'setValue', clipApp.vars.lastStartTime );
+		return false;
+	}
+
+	clipApp.vars.lastStartTime = $("#startTime").timeStepper( 'getValue' );
 	
 	var currentClip = clipApp.kClip.getSelected();
 	var duration = currentClip.clipAttributes.duration - (val - currentClip.clipAttributes.offset);
@@ -223,10 +252,13 @@ clipApp.setStartTime = function( val ) {
 };
 
 clipApp.setEndTime = function( val ) {
-	if( val <= $("#startTime").timeStepper( 'getValue' ) ) {
-		alert('End time cannot be smaller than Start time');
+	if( !clipApp.checkClipDuration( val, 'end') ) {
+		$("#endTime").timeStepper( 'setValue', clipApp.vars.lastEndTime );
 		return false;
 	}
+
+	clipApp.vars.lastEndTime = $("#endTime").timeStepper( 'getValue' );
+	
 	var length = ( val - $("#startTime").timeStepper( 'getValue' ) );
 	clipApp.kClip.updateClipLength(length);
 	clipApp.updateEndTime( val );
@@ -244,13 +276,11 @@ clipApp.activateButtons = function() {
 	$("#preview").click( function() { clipApp.doPreview(); });
 
 	$("#setStartTime").click( function() {
-		var currentTime = clipApp.kdp.evaluate('{video.player.currentTime}') * 1000;
-		clipApp.setStartTime( currentTime );
+		clipApp.setStartTime( clipApp.kClip.getPlayheadLocation() );
 	});
 
 	$("#setEndTime").click( function() {
-		var currentTime = clipApp.kdp.evaluate('{video.player.currentTime}') * 1000;
-		clipApp.setEndTime( currentTime );
+		clipApp.setEndTime( clipApp.kClip.getPlayheadLocation() );
 	});
 
 	$("#delete").click( function() {
@@ -294,8 +324,8 @@ clipApp.resetPreview = function(val) {
 		clipApp.log('resetPreview');
 		clipApp.kdp.setKDPAttribute("blackScreen", "visible", "false" );
 	}
-	//clipApp.log(val * 1000);
-	//clipApp.clipper.updatePlayhead(val * 1000);
+
+	clipApp.clipper.updatePlayhead(val);
 };
 
 clipApp.showEmbed = function( entry_id ) {
