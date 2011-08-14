@@ -16,7 +16,7 @@ clipApp.vars = {
 	redirect_url: "http://www.kaltura.com/",
 	overwrite_entry: false,
 	updateClipperPlayhead: true,
-	debug: true
+	debug: false
 };
 
 clipApp.init = function( options ) {
@@ -29,7 +29,7 @@ var jsCallbackReady = function( videoId ) {
 	clipApp.kdp.addJsListener("mediaReady", "clipApp.player.doFirstPlay");
 	clipApp.kdp.addJsListener("playerPlayed", "clipApp.player.playerPlaying");
 	clipApp.kdp.addJsListener("playerPaused", "clipApp.player.playerPaused");
-	clipApp.kdp.addJsListener("doSeek", "clipApp.resetPreview");
+	clipApp.kdp.addJsListener("doSeek", "clipApp.onSeek");
 };
 
 var clipperReady = function() {
@@ -76,7 +76,7 @@ clipApp.player = {
 		clipApp.kdp.addJsListener("playerUpdatePlayhead", "clipApp.clipper.updatePlayhead");
 	},
 
-	playerPaused: function() {
+	playerPaused: function() { console.log('clipApp.player.playerPaused');
 		clipApp.kClip.addJsListener("playheadUpdated", "clipApp.player.updatePlayhead");
 		clipApp.kdp.removeJsListener("playerUpdatePlayhead", "clipApp.clipper.updatePlayhead");
 	},
@@ -306,22 +306,24 @@ clipApp.doPreview = function() {
 
 	clipApp.log('Start Time: ' + startTime + ', End Time: ' + endTime );
 
+	clipApp.vars.removeBlackScreen = false;
+
+	clipApp.kdp.removeJsListener("doSeek", "clipApp.onSeek");
+
 	clipApp.kdp.sendNotification("doStop");
 	clipApp.kdp.setKDPAttribute("blackScreen", "visible", "true" );
 	clipApp.kdp.setKDPAttribute("mediaProxy", "mediaPlayFrom", startTime );
 	clipApp.kdp.setKDPAttribute("mediaProxy", "mediaPlayTo", endTime );
 	clipApp.kdp.sendNotification("doPlay");
 
-	clipApp.vars.removeBlackScreen = false;
+	clipApp.kdp.addJsListener("doSeek", "clipApp.onSeek");
 };
 
-clipApp.resetPreview = function(val) {
+clipApp.onSeek = function(val) {
 	if( clipApp.vars.removeBlackScreen ) {
-		clipApp.log('resetPreview');
+		clipApp.log('onSeek :: Remove black screen');
 		clipApp.kdp.setKDPAttribute("blackScreen", "visible", "false" );
 	}
-
-	clipApp.clipper.updatePlayhead(val);
 };
 
 clipApp.showEmbed = function( entry_id ) {
