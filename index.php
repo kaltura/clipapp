@@ -41,9 +41,12 @@ if( $conf['overwrite_entry'] ){
 }
 
 ?>
+<!DOCTYPE html>
 <html>
 	<head>
 		<title><?php echo $conf['title']; ?></title>
+		<meta charset="utf-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
 		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 		<script src="js/jquery.time.stepper.js"></script>
 		<script src="js/clipApp.js"></script>
@@ -64,7 +67,10 @@ if( $conf['overwrite_entry'] ){
 		<script src="<?php echo $html5Url; ?>"></script>
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 	</head>
-	<body>
+<!--[if IE 7 ]><body class="ie ie7"><![endif]-->
+<!--[if IE 8 ]><body class="ie ie8"><![endif]-->
+<!--[if IE 9 ]><body class="ie ie9"><![endif]-->
+<!--[if (gt IE 9)|!(IE)]><!--><body><!--<![endif]-->
 		<div id="wrapper">
 			<object id="kdp3" name="kdp3" type="application/x-shockwave-flash" wmode="window" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" bgcolor="#000000" resource="<?php echo $kdpUrl; ?>" data="<?php echo $kdpUrl; ?>"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="window" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="&steamerType=rtmp" /><param name="movie" value="<?php echo $kdpUrl; ?>" /></object>
 			<div id="form" class="form clearfix">
@@ -74,7 +80,7 @@ if( $conf['overwrite_entry'] ){
 					<?php if( $conf['show_embed'] === true ) { ?>
 					<div class="item clearfix">
 						<label>Embed:</label>
-						<input id="embedcode" type="text" value="" />
+						<input id="embedcode" class="text-field" type="text" value="" />
 					</div><br />
 					<?php } ?>
 				</div>
@@ -88,25 +94,27 @@ if( $conf['overwrite_entry'] ){
 						<label>End Time:</label>
 						<input id="endTime" value="" />
 					</div>
+					<?php if( ! $conf['overwrite_entry'] ): ?>
 					<div class="item clearfix">
 						<label>Title:</label>
-						<input id="entry_title" type="text" value="<?php echo $entry->name; ?>" /><br /><br />
+						<input id="entry_title" class="text-field" type="text" value="<?php echo $entry->name; ?>" /><br /><br />
 					</div>
 					<div class="item clearfix">
 						<label>Description:</label>
 						<textarea id="entry_desc"><?php echo $entry->description; ?></textarea><br /><br />
 					</div>
+					<?php endif; ?>
 				</div>
 			</div>
 			<object id="clipper" name="clipper" type="application/x-shockwave-flash" wmode="window" allowNetworking="all" allowScriptAccess="always" data="<?php echo $clipperUrl; ?>"><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="window" /><param name="bgcolor" value="#f8f8f8" /><param name="flashVars" value="<?php echo $clipperFlashvars; ?>" /><param name="movie" value="<?php echo $clipperUrl; ?>" /></object>
 			
 			<div id="actions" class="clearfix">
 				<div class="disable"></div>
-				<div class="left">
+				<div class="left clearfix">
 					<a href="#" id="setStartTime">Set In</a>
 					<a href="#" id="setEndTime">Set Out</a>
 				</div>
-				<div class="right">
+				<div class="right clearfix">
 					<a href="#" id="preview">Preview</a>
 					<span class="seperator"> | </span>
 					<a href="#" id="delete">Remove</a>

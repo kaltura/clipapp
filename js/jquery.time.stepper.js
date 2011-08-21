@@ -164,13 +164,13 @@
 			var $controls = $('<div />').addClass('controls').append( $('<span />').addClass('plus'), $('<span />').addClass('minus') );
 
 			var $timeStepper = $('<div />').attr('id', 'ts_' + el.id ).addClass('time-stepper').append(
-				$('<input />').addClass( units.h ).val('00'),
+				$('<input />').addClass( units.h ).attr({maxlength: 2, min: 0, max: 23}).val('00'),
 				$colons,
-				$('<input />').addClass( units.m ).val('00'),
+				$('<input />').addClass( units.m ).attr({maxlength: 2, min: 0, max: 59}).val('00'),
 				$colons.clone(),
-				$('<input />').addClass( units.s ).val('00'),
+				$('<input />').addClass( units.s ).attr({maxlength: 2, min: 0, max: 59}).val('00'),
 				$colons.clone(),
-				$('<input />').addClass( units.ms ).val('000'),
+				$('<input />').addClass( units.ms ).attr({maxlength: 3, min: 0, max: 999}).val('000'),
 				$controls
 			);
 
@@ -203,11 +203,11 @@
 				});
 
 				timeStepper.find('input').bind('focus.ts', function( e ) {
-
-					_methods.setTimeUnit( $( this ).attr( 'class' ) );
-					curEl = $(this).parent();
+					var $input = $(this);
+					_methods.setTimeUnit( $input.attr( 'class' ) );
+					curEl = $input.parent();
 					if( !keydownBind ) {
-						$(this).bind('keydown.ts', function( e ) {
+						$input.bind('keydown.ts', function( e ) {
 
 							// If user press up or left increase the number
 							if (e.keyCode == 37 || e.keyCode == 38) {
@@ -221,7 +221,9 @@
 						});
 						keydownBind = true;
 					}
-
+					setTimeout( function() {
+						$input.select();
+					}, 100);
 				}).bind('blur.ts', function() {
 					keydownBind = false;
 					$(this).unbind('keydown.ts');
@@ -230,7 +232,7 @@
 				});
 				
 				timeStepper.find(".plus").bind('mousedown.ts', function() {
-					tsInterval = setInterval( function() {_methods.increase();}, 100);
+					tsInterval = setInterval( function() { _methods.increase(); }, 100);
 				}).bind('mouseup.ts mouseleave.ts', function() {
 					clearInterval(tsInterval);
 				}).bind('click.ts', function() {
