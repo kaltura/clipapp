@@ -173,6 +173,10 @@ clipApp.checkClipDuration = function( val, type ) {
 		alert('Clip duration must be at least 100ms');
 		return false;
 	}
+
+	if( val > (clipApp.getLength() * 1000) ) {
+		return false;
+	}
 	
 	return true;
 };

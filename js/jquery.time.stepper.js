@@ -88,6 +88,7 @@
 		update: function( val, timeUnit, el ) {
 			var unit = (timeUnit) ? timeUnit : curTimeUnit;
 			el = ( el ) ? el : curEl;
+			val = Math.round(val);
 
 			if( val >= this.getMaxTimeUnit( unit ) ) {
 				val = this.getMaxTimeUnit( unit );
