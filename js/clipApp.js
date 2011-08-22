@@ -181,7 +181,7 @@ clipApp.updateStartTime = function(clip) {
 	var startTime = Math.round( clip.clipAttributes.offset );
 	if( $("#startTime").timeStepper( 'getValue' ) == startTime ) { return ; }
 
-	clipApp.log('Timers :: Set startTime: ' + startTime);
+	clipApp.log('TimeStepper :: Set startTime: ' + startTime);
 	$("#startTime").timeStepper( 'setValue', startTime );
 	clipApp.vars.lastStartTime = startTime;
 };
@@ -190,13 +190,13 @@ clipApp.updateEndTime = function(clip) {
 	var endTime = Math.round( clip.clipAttributes.offset + clip.clipAttributes.duration );
 	if( $("#endTime").timeStepper( 'getValue' ) == endTime || endTime <= 0 ) { return ; }
 
-	clipApp.log('Timers :: Set endTime: ' + endTime);
+	clipApp.log('TimeStepper :: Set endTime: ' + endTime);
 	$("#endTime").timeStepper( 'setValue', endTime );
 	clipApp.vars.lastEndTime = endTime;
 };
 
-clipApp.setStartTime = function( startTime ) {
-	startTime = Math.round(startTime);
+clipApp.setStartTime = function( val ) {
+	var startTime = Math.round(val);
 	if( !clipApp.checkClipDuration( startTime, 'start') ) {
 		$("#startTime").timeStepper( 'setValue', clipApp.vars.lastStartTime );
 		return ;
@@ -211,8 +211,8 @@ clipApp.setStartTime = function( startTime ) {
 	clipApp.kdp.sendNotification("doPause");
 };
 
-clipApp.setEndTime = function( endTime ) {
-	endTime = Math.round(endTime);
+clipApp.setEndTime = function( val ) {
+	var endTime = Math.round(val);
 	if( !clipApp.checkClipDuration( endTime, 'end') ) {
 		$("#endTime").timeStepper( 'setValue', clipApp.vars.lastEndTime );
 		return ;
@@ -328,13 +328,20 @@ clipApp.getUniqueId = function() {
 	return d.getTime().toString().substring(4);
 };
 
-clipApp.showEmbed = function( entry_id ) {
+clipApp.showEmbed = function( entry_id, entry_name ) {
 	// Hide current elements
 	clipApp.deleteClip();
 
 	// Set embed code
 	$("#embedcode").click( function() { this.select(); } );
 	$("#embedcode").val( clipApp.getEmbedCode( entry_id ) );
+
+	// Search & Replace for [title] & [entryId] in save message
+	var saveMessage = $("#embed").find("p").html();
+	saveMessage = saveMessage.replace("@title@", entry_name);
+	saveMessage = saveMessage.replace("@entryId@", entry_id);
+	
+	$("#embed").find("p").html( saveMessage );
 
 	// Show embed code
 	$("#fields").hide();
@@ -391,7 +398,7 @@ clipApp.doSave = function() {
 			if( clipApp.vars.redirect_save === true ) {
 				window.location.href = clipApp.vars.redirect_url;
 			} else {
-				clipApp.showEmbed(res.id);
+				clipApp.showEmbed(res.id, res.name);
 			}
 		}
 	});
