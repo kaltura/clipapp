@@ -232,8 +232,11 @@
 					_methods.update( this.value );
 				});
 				
-				timeStepper.find(".plus").bind('mousedown.ts', function() {
-					tsInterval = setInterval( function() { _methods.increase(); }, 100);
+				timeStepper.find(".plus").bind('mousedown.ts', function(e) {
+					 // trigger only for left click
+					if( e.which === 1 ){
+						tsInterval = setInterval( function() { _methods.increase(); }, 100);
+					}
 				}).bind('mouseup.ts mouseleave.ts', function() {
 					clearInterval(tsInterval);
 				}).bind('click.ts', function() {

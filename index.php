@@ -97,11 +97,11 @@ if( $conf['overwrite_entry'] ){
 					<?php if( ! $conf['overwrite_entry'] ): ?>
 					<div class="item clearfix">
 						<label>Title:</label>
-						<input id="entry_title" class="text-field" type="text" value="<?php echo $entry->name; ?>" /><br /><br />
+						<input id="entry_title" class="text-field" type="text" value="<?php echo htmlspecialchars($entry->name); ?>" /><br /><br />
 					</div>
 					<div class="item clearfix">
 						<label>Description:</label>
-						<textarea id="entry_desc"><?php echo $entry->description; ?></textarea><br /><br />
+						<textarea id="entry_desc"><?php echo htmlspecialchars($entry->description); ?></textarea><br /><br />
 					</div>
 					<?php endif; ?>
 				</div>
