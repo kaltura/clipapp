@@ -19,10 +19,16 @@ $config['default']['host'] = 'www.kaltura.com';
 $config['default']['partner_id'] = '';
 
 /*
- * User Secret
+ * User Secret - used for kclip
  * You can get it from KMC > Settings > Integration Settings
  */
 $config['default']['usersecret'] = '';
+
+/*
+ * Admin Secret - used for saving the clip/trim
+ * You can get it from KMC > Settings > Integration Settings
+ */
+$config['default']['adminsecret'] = '';
 
 /*
  * User ID

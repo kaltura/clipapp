@@ -7,13 +7,13 @@ require_once('init.php');
 $entryId = (isset($_GET['entryId']) ? htmlspecialchars($_GET['entryId']) : $conf['entry_id']);
 
 // html5 library location
-$html5Url = 'http://' . $conf['host'] . '/p/' . $conf['partner_id'] ."/sp/". $conf['partner_id'] ."00/embedIframeJs/uiconf_id/". $conf['kdp_uiconf_id'] ."/partner_id/". $conf['partner_id'];
+$html5Url = $protocol . '://' . $conf['host'] . '/p/' . $conf['partner_id'] ."/sp/". $conf['partner_id'] ."00/embedIframeJs/uiconf_id/". $conf['kdp_uiconf_id'] ."/partner_id/". $conf['partner_id'];
 
 // Create Kdp Url
-$kdpUrl = 'http://' . $conf['host'] . '/kwidget/wid/_' . $conf['partner_id'] . '/uiconf_id/' . $conf['kdp_uiconf_id'] . '/sus/ash/entry_id/' . $entryId;
+$kdpUrl = $protocol . '://' . $conf['host'] . '/kwidget/wid/_' . $conf['partner_id'] . '/uiconf_id/' . $conf['kdp_uiconf_id'] . '/sus/ash/entry_id/' . $entryId;
 
 // Create Clipper Url & Flashvars
-$clipperUrl = 'http://' . $conf['host'] . '/kgeneric/ui_conf_id//' . $conf['clipper_uiconf_id'];
+$clipperUrl = $protocol . '://' . $conf['host'] . '/kgeneric/ui_conf_id//' . $conf['clipper_uiconf_id'];
 
 $clipperFlashvars = '&entry_id=' . $entryId . '&partner_id=' . $conf['partner_id'] . '&host=' . $conf['host'];
 $clipperFlashvars .= '&ks=' . $ks . '&show_add_delete_buttons=false&state=clippingState&jsReadyFunc=clipperReady';
@@ -35,9 +35,11 @@ catch(Exception $e)
 if( $conf['overwrite_entry'] ){
 	$save_message = $conf['trim_save_message'];
 	$form_title = 'Use the trimming timeline below or enter exact in and out times';
+	$trim_note = '<p class="note">Note: Trimming will replace your original media!</p>';
 } else {
 	$save_message = $conf['clip_save_message'];
 	$form_title = '<a href="#">Add New Clip</a>';
+	$trim_note = '';
 }
 
 ?>
@@ -85,6 +87,7 @@ if( $conf['overwrite_entry'] ){
 					<?php } ?>
 				</div>
 				<div id="fields">
+					<?php echo $trim_note; ?>
 					<div class="disable"></div>
 					<div class="item clearfix">
 						<label>Start Time:</label>

@@ -1,6 +1,7 @@
 <?php
 
 // Initilize App
+$save = true;
 require_once('init.php');
 
 // Params

@@ -27,15 +27,23 @@ require_once('client/KalturaClient.php');
 
 try {
 	// Return a Client
+	$protocol = (isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on') ? "https" : "http";
 	$config = new KalturaConfiguration( $conf['partner_id'] );
-	$config->serviceUrl = 'http://' . $conf['host'];
+	$config->serviceUrl = $protocol . '://' . $conf['host'];
 	$client = new KalturaClient( $config );
 
 	// Create & Set KS
 	if( isset($conf['ks']) ) {
 		$ks = $conf['ks'];
 	} else {
-		$ks = $client->session->start($conf['usersecret'], $conf['user_id'], null, $conf['partner_id'], null, null);
+		if( isset( $save ) ) {
+			$sessionType = KalturaSessionType::ADMIN;
+			$sessionSecret = $conf['adminsecret'];
+		} else {
+			$sessionType = KalturaSessionType::USER;
+			$sessionSecret = $conf['usersecret'];
+		}
+		$ks = $client->session->start($sessionSecret, $conf['user_id'], $sessionType, $conf['partner_id'], null, null);
 	}
 	$client->setKs($ks);
 } catch( Exception $e ){
@@ -44,3 +52,4 @@ try {
 }
 // Reset admin secret just in case
 $conf['usersecret'] = null;
+$conf['adminsecret'] = null;

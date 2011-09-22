@@ -168,6 +168,11 @@ clipApp.checkClipDuration = function( val, type ) {
 	} else if( type == 'end' )	 {
 		minLength = val - $("#startTime").timeStepper( 'getValue' );
 	}
+
+	if( type == 'start' && ( val > $("#endTime").timeStepper( 'getValue' )) ) {
+		alert('End-time must be larger than Start-time.');
+		return false;
+	}
 	
 	if( minLength <= 100 ) {
 		alert('Clip duration must be at least 100ms');
