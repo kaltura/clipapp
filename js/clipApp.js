@@ -422,6 +422,9 @@ clipApp.deleteClip = function() {
 
 	// Reset fields
 	$("#entry_title").val( clipApp.vars.entry.name );
+	if( ! clipApp.vars.entry.description ) {
+		clipApp.vars.entry.description = '';
+	}
 	$("#entry_desc").val( clipApp.vars.entry.description );
 
 	if( !clipApp.vars.overwrite_entry ) {
