@@ -74,7 +74,7 @@ if( $conf['overwrite_entry'] ){
 <!--[if IE 9 ]><body class="ie ie9"><![endif]-->
 <!--[if (gt IE 9)|!(IE)]><!--><body><!--<![endif]-->
 		<div id="wrapper">
-			<object id="kdp3" name="kdp3" type="application/x-shockwave-flash" wmode="window" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" bgcolor="#000000" resource="<?php echo $kdpUrl; ?>" data="<?php echo $kdpUrl; ?>"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="window" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="" /><param name="movie" value="<?php echo $kdpUrl; ?>" /></object>
+			<object id="kdp3" name="kdp3" type="application/x-shockwave-flash" wmode="window" allowFullScreen="true" allowNetworking="all" allowScriptAccess="always" bgcolor="#000000" resource="<?php echo $kdpUrl; ?>" data="<?php echo $kdpUrl; ?>"><param name="allowFullScreen" value="true" /><param name="allowNetworking" value="all" /><param name="allowScriptAccess" value="always" /><param name="wmode" value="window" /><param name="bgcolor" value="#000000" /><param name="flashVars" value="ks=<?php echo $ks;?>" /><param name="movie" value="<?php echo $kdpUrl; ?>" /></object>
 			<div id="form" class="form clearfix">
 				<div id="newclip"><div class="disable"></div><img id="loader" src="images/loader.gif" alt="Saving..." /><?php echo $form_title; ?></div>
 				<div id="embed" class="form clearfix">
