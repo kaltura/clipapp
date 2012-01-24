@@ -102,7 +102,7 @@ clipApp.player = {
 clipApp.clipper = {
 	dragging: false,
 	addClip: function( start, end ) {
-		var clip_length = (end) ? end : ( ( (clipApp.getLength() * 10) / 100 ) * 1000 );
+		var clip_length = (end) ? end : (clipApp.getMsDuration() / 10); // Get 10 percent of video duration
 		var clip_offset = (start) ? start : clipApp.kClip.getPlayheadLocation();
 		clip_length = Math.round(clip_length);
 		clip_offset = Math.round(clip_offset);
@@ -121,8 +121,8 @@ clipApp.clipper = {
 };
 
 clipApp.clipAdded = function( clip ) {
-	clipApp.updateStartTime(clip);
-	clipApp.updateEndTime(clip);
+	clipApp.updateStartTime( clip );
+	clipApp.updateEndTime( clip );
 	clipApp.addClipForm();
 };
 
@@ -179,7 +179,7 @@ clipApp.checkClipDuration = function( val, type ) {
 		return false;
 	}
 
-	if( val > (clipApp.getLength() * 1000) ) {
+	if( val > (clipApp.getMsDuration()) ) {
 		return false;
 	}
 	
@@ -268,8 +268,8 @@ clipApp.activateButtons = function() {
 
 clipApp.enableAddClip = function() {
 	if( clipApp.vars.overwrite_entry ) {
-		clipApp.log('Add new clip for trimming', (clipApp.getLength() * 1000) );
-		clipApp.clipper.addClip(0, (clipApp.getLength() * 1000) );
+		clipApp.log('Add new clip for trimming', (clipApp.getMsDuration()) );
+		clipApp.clipper.addClip(0, (clipApp.getMsDuration()) );
 	}
 	$("#newclip").find('.disable').remove();
 };
@@ -311,8 +311,11 @@ clipApp.onSeek = function(val) {
 	}
 };
 
-clipApp.getLength = function() {
+clipApp.getDuration = function() {
 	return clipApp.vars.entry.duration;
+};
+clipApp.getMsDuration = function() {
+	return clipApp.vars.entry.msDuration;
 };
 
 clipApp.showError = function(error) {
