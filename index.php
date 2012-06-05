@@ -13,7 +13,7 @@ $html5Url = $protocol . '://' . $conf['host'] . '/p/' . $conf['partner_id'] ."/s
 $kdpUrl = $protocol . '://' . $conf['host'] . '/kwidget/wid/_' . $conf['partner_id'] . '/uiconf_id/' . $conf['kdp_uiconf_id'] . '/sus/ash/entry_id/' . $entryId;
 
 // Create Clipper Url & Flashvars
-$clipperUrl = $protocol . '://' . $conf['host'] . '/kgeneric/ui_conf_id//' . $conf['clipper_uiconf_id'];
+$clipperUrl = $protocol . '://' . $conf['host'] . '/kgeneric/ui_conf_id/' . $conf['clipper_uiconf_id'];
 
 $clipperFlashvars = '&entry_id=' . $entryId . '&partner_id=' . $conf['partner_id'] . '&host=' . $conf['host'];
 $clipperFlashvars .= '&ks=' . $ks . '&show_add_delete_buttons=false&state=clippingState&jsReadyFunc=clipperReady';
