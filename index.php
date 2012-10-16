@@ -17,7 +17,7 @@ $clipperUrl = $protocol . '://' . $conf['host'] . '/kgeneric/ui_conf_id/' . $con
 
 $clipperFlashvars = '&entry_id=' . $entryId . '&partner_id=' . $conf['partner_id'] . '&host=' . $conf['host'];
 $clipperFlashvars .= '&ks=' . $ks . '&show_add_delete_buttons=false&state=clippingState&jsReadyFunc=clipperReady';
-$clipperFlashvars .= '&max_allowed_rows=1&show_control_bar=true&show_message_box=false';
+$clipperFlashvars .= '&max_allowed_rows=1&show_control_bar=true&show_message_box=false&protocol=' . $protocol . '://';
 
 if(!$entryId)
 	die("Missing entry id");
@@ -49,7 +49,7 @@ if( $conf['overwrite_entry'] ){
 		<title><?php echo $conf['title']; ?></title>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
-		<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
 		<script src="js/jquery.time.stepper.js"></script>
 		<script src="js/clipApp.js"></script>
 		<script>
