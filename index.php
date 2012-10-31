@@ -10,7 +10,7 @@ $entryId = (isset($_GET['entryId']) ? htmlspecialchars($_GET['entryId']) : $conf
 $html5Url = $protocol . '://' . $conf['host'] . '/p/' . $conf['partner_id'] ."/sp/". $conf['partner_id'] ."00/embedIframeJs/uiconf_id/". $conf['kdp_uiconf_id'] ."/partner_id/". $conf['partner_id'];
 
 // Create Kdp Url
-$kdpUrl = $protocol . '://' . $conf['host'] . '/kwidget/wid/_' . $conf['partner_id'] . '/uiconf_id/' . $conf['kdp_uiconf_id'] . '/sus/ash/entry_id/' . $entryId;
+$kdpUrl = $protocol . '://' . $conf['host'] . '/kwidget/wid/_' . $conf['partner_id'] . '/uiconf_id/' . $conf['kdp_uiconf_id'] . '/entry_id/' . $entryId;
 
 // Create Clipper Url & Flashvars
 $clipperUrl = $protocol . '://' . $conf['host'] . '/kgeneric/ui_conf_id/' . $conf['clipper_uiconf_id'];
