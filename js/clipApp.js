@@ -385,7 +385,7 @@ clipApp.doSave = function() {
 	};
 
 	var saveUrl = 'save.php';
-	if( clipApp.vars.config.length > 0 ) {
+	if( clipApp.vars.config ) {
 		var queryString = $.param( {
 			'config': clipApp.vars.config,
 			'partnerId': clipApp.vars.partner_id,

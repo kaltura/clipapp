@@ -42,6 +42,19 @@ if( $conf['overwrite_entry'] ){
 	$trim_note = '';
 }
 
+$clipAppConfig = array(
+	"config" => (isset($_GET['config'])) ? htmlspecialchars($_GET['config']) : null,
+	"host" => $conf['host'],
+	"partner_id" => $conf['partner_id'],
+	"entry" => ($entry) ? $entry : null,
+	"ks" => $ks,
+	"kdp_uiconf_id" => $conf['kdp_uiconf_id'],
+	"kclip_uiconf_id" => $conf['clipper_uiconf_id'],
+	"redirect_save" => $conf['redirect_save'],
+	"redirect_url" => $conf['redirect_url'],
+	"overwrite_entry" => $conf['overwrite_entry'],
+);
+
 ?>
 <!DOCTYPE html>
 <html>
@@ -49,23 +62,10 @@ if( $conf['overwrite_entry'] ){
 		<title><?php echo $conf['title']; ?></title>
 		<meta charset="utf-8" />
 		<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE8" />
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+		<script src="js/jquery-1.4.2.min.js"></script>
 		<script src="js/jquery.time.stepper.js"></script>
 		<script src="js/clipApp.js"></script>
-		<script>
-		clipApp.init( {
-				"config": "<?php echo htmlspecialchars($_GET['config']);?>",
-				"host": "<?php echo $conf['host'];?>",
-				"partner_id": "<?php echo $conf['partner_id'];?>",
-				"entry": <?php echo json_encode($entry);?>,
-				"ks": "<?php echo $ks;?>",
-				"kdp_uiconf_id": <?php echo $conf['kdp_uiconf_id']; ?>,
-				"kclip_uiconf_id": <?php echo $conf['clipper_uiconf_id']; ?>,
-				"redirect_save": <?php echo ($conf['redirect_save']) ? 'true' : 'false'; ?>,
-				"redirect_url": "<?php echo $conf['redirect_url']; ?>",
-				"overwrite_entry": <?php echo ($conf['overwrite_entry']) ? 'true' : 'false'; ?>
-		});
-		</script>
+		<script>clipApp.init( <?php echo json_encode($clipAppConfig); ?> );</script>
 		<script src="<?php echo $html5Url; ?>"></script>
 		<link rel="stylesheet" type="text/css" href="css/style.css" />
 	</head>

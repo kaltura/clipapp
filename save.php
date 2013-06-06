@@ -39,8 +39,12 @@ if( $overwrite ) {
 	$entry->mediaType		= intval($_POST['mediaType']);
 
 	// New Clip
-	$resultEntry = $client->media->add($entry);
-	$resultEntry = $client->media->addContent($resultEntry->id, $resource);
+	try {
+		$resultEntry = $client->media->add($entry);
+		$resultEntry = $client->media->addContent($resultEntry->id, $resource);
+	} catch( Exception $e ){
+		die('{"error": "' . $e->getMessage() . '"}');
+	}
 }
 
 echo json_encode($resultEntry);
