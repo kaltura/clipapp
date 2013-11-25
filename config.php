@@ -75,3 +75,6 @@ $config['default']['kdp_uiconf_id'] = 0;
 
 /* Clipper UIConf ID */
 $config['default']['clipper_uiconf_id'] = 0;
+
+/* Clip App language */
+$config['default']['language'] = "en";
