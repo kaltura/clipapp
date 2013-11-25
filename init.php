@@ -50,6 +50,23 @@ try {
 	$error = '<h1>Error</h1>' . $e->getMessage();
 	die($error);
 }
-// Reset admin secret just in case
+
+// Reset admin/user secrets, just for safety
 $conf['usersecret'] = null;
 $conf['adminsecret'] = null;
+
+// Localization
+include('Lang.php');
+
+$lang = $conf['language'];
+if( isset($_GET['lang']) && preg_match('/^[a-zA-Z_-]+$/', $_GET['lang']) ){
+	$lang = strtolower($_GET['lang']);
+}
+
+// Load our language
+$langHelper = new Lang( $lang );
+
+function t( $text ) {
+	global $langHelper;
+	return $langHelper->translate( $text );
+}
