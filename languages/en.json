@@ -1,0 +1,20 @@
+{
+	"Entry Id not found": "Entry Id not found",
+	"Add New Clip": "Add New Clip",
+	"Use the trimming timeline below or enter exact in and out times": "Use the trimming timeline below or enter exact in and out times",
+	"Note: Trimming will replace your original media!": "Note: Trimming will replace your original media!",
+	"Saving": "Saving",
+	"Embed": "Embed",
+	"Start Time": "Start Time",
+	"End Time": "End Time",
+	"Title": "Title",
+	"Description": "Description",
+	"Set In": "Set In",
+	"Set Out": "Set Out",
+	"Preview": "Preview",
+	"Remove": "Remove",
+	"Save": "Save",
+	"End-time must be larger than Start-time": "End-time must be larger than Start-time",
+	"Clip duration must be at least 100ms": "Clip duration must be at least 100ms",
+	"Are you sure you want to delete?": "Are you sure you want to delete?"
+}
