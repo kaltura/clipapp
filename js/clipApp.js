@@ -120,6 +120,10 @@ clipApp.clipper = {
 	}
 };
 
+clipApp.m = function( msgKey ){
+	return this.vars.messages[ msgKey ] || '';
+};
+
 clipApp.clipAdded = function( clip ) {
 	clipApp.updateStartTime( clip );
 	clipApp.updateEndTime( clip );
@@ -165,17 +169,17 @@ clipApp.checkClipDuration = function( val, type ) {
 	var minLength = 0;
 	if( type == 'start' ) {
 		minLength = $("#endTime").timeStepper( 'getValue' ) - val;
-	} else if( type == 'end' )	 {
+	} else if( type == 'end' ) {
 		minLength = val - $("#startTime").timeStepper( 'getValue' );
 	}
 
 	if( type == 'start' && ( val > $("#endTime").timeStepper( 'getValue' )) ) {
-		alert('End-time must be larger than Start-time.');
+		alert(this.m('start_time_error'));
 		return false;
 	}
 	
 	if( minLength <= 100 ) {
-		alert('Clip duration must be at least 100ms');
+		alert(this.m('clip_duration_error'));
 		return false;
 	}
 
@@ -254,7 +258,7 @@ clipApp.activateButtons = function() {
 	});
 
 	$("#delete").click( function() {
-		if ( confirm("Are you sure you want to delete?") ) {
+		if ( confirm(clipApp.m('delete_confirmation')) ) {
 			clipApp.deleteClip();
 		}
 		return false;
@@ -363,7 +367,7 @@ clipApp.showEmbed = function( entry_id, entry_name ) {
 
 clipApp.doSave = function() {
 	if( ($("#endTime").timeStepper( 'getValue' ) - $("#startTime").timeStepper( 'getValue' )) <= 100 ) {
-		alert('Clip duration must be bigger then 100ms.');
+		alert(this.m('clip_duration_error'));
 		return ;
 	}
 
