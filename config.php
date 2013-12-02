@@ -16,32 +16,34 @@ $config['default']['host'] = 'www.kaltura.com';
  * Partner ID
  * You can get it from KMC > Settings > Integration Settings
  */
-$config['default']['partner_id'] = '';
+$config['default']['partner_id'] = '1281471';
 
 /*
  * User Secret - used for kclip
  * You can get it from KMC > Settings > Integration Settings
  */
-$config['default']['usersecret'] = '';
+$config['default']['usersecret'] = '8693635e7326535b513cbba24a5dca16';
 
 /*
  * Admin Secret - used for saving the clip/trim
  * You can get it from KMC > Settings > Integration Settings
  */
-$config['default']['adminsecret'] = '';
+$config['default']['adminsecret'] = '16c9a255faa3303d42d660a39145d69d';
 
 /*
  * User ID
  * You can get it from KMC > Settings > My User Settings
  */
-$config['default']['user_id'] = '';
+$config['default']['user_id'] = 'itay.kinnrot@kaltura.com';
 
 /*
  * Default Entry Id
  * You can also use 'entryId' GET parameter to overwrite it
  * EX: http://localhost/ClipApp/?entryId=1_sfrj36g3
  */
-$config['default']['entry_id'] = '';
+$config['default']['entry_id'] = '1_0i2t7w0i';//1_0i2t7w0i //1_mec9icc2
+$config['default']['entry_id'] = '1_mec9icc2';
+
 
 /*
  * Overwrite Entry
@@ -71,10 +73,10 @@ $config['default']['show_embed'] = true;
 $config['default']['html5_embed'] = true;
 
 /* KDP UIConf ID */
-$config['default']['kdp_uiconf_id'] = 0;
+$config['default']['kdp_uiconf_id'] = 21224102;
 
 /* Clipper UIConf ID */
-$config['default']['clipper_uiconf_id'] = 0;
+$config['default']['clipper_uiconf_id'] = 21224322;
 
 /* Clip App language */
 $config['default']['language'] = "en";
