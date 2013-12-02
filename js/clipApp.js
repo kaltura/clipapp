@@ -25,16 +25,16 @@ clipApp.init = function( options ) {
 
 var jsCallbackReady = function( videoId ) {
 	clipApp.kdp = $("#" + videoId ).get(0);
-
 	clipApp.kdp.addJsListener("mediaReady", "clipApp.player.doFirstPlay");
 	clipApp.kdp.addJsListener("playerPlayed", "clipApp.player.playerPlaying");
 	clipApp.kdp.addJsListener("playerPaused", "clipApp.player.playerPaused");
 	clipApp.kdp.addJsListener("doSeek", "clipApp.onSeek");
+	clipApp.kdp.addJsListener("durationChange", "clipApp.player.durationChange");
+
 };
 
 var clipperReady = function() {
 	clipApp.kClip = $("#clipper").get(0);
-
 	clipApp.kClip.addJsListener("clipStartChanged", "clipApp.updateStartTime");
 	clipApp.kClip.addJsListener("clipEndChanged", "clipApp.updateEndTime");
 	clipApp.kClip.addJsListener("entryReady", "clipApp.enableAddClip");
@@ -95,6 +95,12 @@ clipApp.player = {
 		setTimeout(function() {
 			clipApp.kdp.sendNotification("doPause");
 		}, 250);
+	},
+
+	durationChange:function(data) {
+		clipApp.vars.entry.msDuration = data.newValue*1000;
+		clipApp.kClip.setDuration(data.newValue*1000);
+
 	}
 };
 
