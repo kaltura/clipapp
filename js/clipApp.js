@@ -98,8 +98,11 @@ clipApp.player = {
 	},
 
 	durationChange:function(data) {
-		clipApp.vars.entry.msDuration = data.newValue*1000;
-		clipApp.kClip.setDuration(data.newValue*1000);
+		var newDuration =  data.newValue*1000;
+		if ( newDuration != clipApp.vars.entry.msDuration ) {
+			clipApp.vars.entry.msDuration = newDuration;
+			clipApp.kClip.setDuration(data.newValue*1000);
+		}
 
 	}
 };
@@ -293,6 +296,8 @@ clipApp.doPreview = function() {
 	clipApp.vars.removeBlackScreen = false;
 
 	clipApp.kdp.removeJsListener("doSeek", "clipApp.onSeek");
+	//will re-listen to seek events after this mediaPlayFrom seek has finished
+	clipApp.kdp.addJsListener("playerSeekEnd", "clipApp.onPlayerSeekEnd");
 	clipApp.kClip.updateZoomIndex(0);
 
 	if( clipApp.vars.playerPlaying ){
@@ -305,8 +310,15 @@ clipApp.doPreview = function() {
 	clipApp.kdp.sendNotification("doPlay");
 	clipApp.kdp.sendNotification("doPlay");
 
-	clipApp.kdp.addJsListener("doSeek", "clipApp.onSeek");
+
 };
+
+clipApp.onPlayerSeekEnd = function() {
+	setTimeout( function() {
+		clipApp.kdp.addJsListener("doSeek", "clipApp.onSeek");
+	}, 1);
+
+}
 
 clipApp.onSeek = function(val) {
 	if( clipApp.vars.removeBlackScreen ) {
