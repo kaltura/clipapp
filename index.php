@@ -85,7 +85,7 @@ $clipAppConfig = array(
 				<param name="allowScriptAccess" value="always" />
 				<param name="wmode" value="window" />
 				<param name="bgcolor" value="#000000" />
-				<param name="flashVars" value="ks=<?php echo $ks;?>&streamerType=auto&autoPlay=true" />
+				<param name="flashVars" value="ks=<?php echo $ks;?>&streamerType=auto&autoPlay=true&useLiveStreamMinDuration=true" />
 				<param name="movie" value="<?php echo $kdpUrl; ?>" />
 			</object>
 			<div id="form" class="form clearfix">
