@@ -1,0 +1,20 @@
+{
+	"Entry Id not found": "ID entrée introuvable",
+	"Add New Clip": "Ajouter un nouveau clip",
+	"Use the trimming timeline below or enter exact in and out times": "Utilisez la durée de rognage ci-dessous ou entrez les heures d'entrée et de sortie exactes",
+	"Note: Trimming will replace your original media!": "Remarque : Le rognage remplacera votre média d'origine !",
+	"Saving": "Enregistrement",
+	"Embed": "Intégrer",
+	"Start Time": "Heure de début",
+	"End Time": "Heure de fin",
+	"Title": "Titre",
+	"Description": "Description",
+	"Set In": "Définir l'entrée",
+	"Set Out": "Définir la sortie",
+	"Preview": "Prévisualiser",
+	"Remove": "Supprimer",
+	"Save": "Enregistrer",
+	"End-time must be larger than Start-time": "L'heure de fin doit être plus grande que l'heure de début",
+	"Clip duration must be at least 100ms": "La durée du clip doit être d'au moins 100 ms",
+	"Are you sure you want to delete?": "Êtes-vous sûr de vouloir supprimer l'élément ?"
+}

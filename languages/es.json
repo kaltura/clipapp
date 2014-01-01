@@ -1,0 +1,20 @@
+{
+	"Entry Id not found": "No se encuentra el Id de la entrada",
+	"Add New Clip": "Agregar nuevo clip",
+	"Use the trimming timeline below or enter exact in and out times": "Utilice la cronología de corte abajo o introduzca los tiempos exactos de entrada y salida",
+	"Note: Trimming will replace your original media!": "Nota: el corte sustituirá sus medios originales.",
+	"Saving": "Guardando",
+	"Embed": "Insertar",
+	"Start Time": "Tiempo de inicio",
+	"End Time": "Tiempo de fin",
+	"Title": "Título",
+	"Description": "Descripción",
+	"Set In": "Entrada definida",
+	"Set Out": "Salida definida",
+	"Preview": "Vista previa",
+	"Remove": "Quitar",
+	"Save": "Guardar",
+	"End-time must be larger than Start-time": "El tiempo de fin debe ser posterior al tiempo de inicio",
+	"Clip duration must be at least 100ms": "La duración del clip debe ser de 100 ms como mínimo",
+	"Are you sure you want to delete?": "¿Está seguro de que desea eliminar?"
+}
