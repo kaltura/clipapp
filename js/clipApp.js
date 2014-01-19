@@ -405,6 +405,9 @@ clipApp.doSave = function() {
 		'start': $("#startTime").timeStepper( 'getValue' ),
 		'end': $("#endTime").timeStepper( 'getValue' )
 	};
+	if ( params.mediaType == '201' ) {
+		params.mediaType = '1';
+	}
 
 	var saveUrl = 'save.php';
 	if( clipApp.vars.config ) {
