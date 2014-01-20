@@ -25,7 +25,8 @@ clipApp.init = function( options ) {
 
 var jsCallbackReady = function( videoId ) {
 	clipApp.kdp = $("#" + videoId ).get(0);
-	clipApp.kdp.addJsListener("mediaReady", "clipApp.player.doFirstPlay");
+	clipApp.player.firstLoad = true;
+	//clipApp.kdp.addJsListener("mediaReady", "clipApp.player.doFirstPlay");
 	clipApp.kdp.addJsListener("playerPlayed", "clipApp.player.playerPlaying");
 	clipApp.kdp.addJsListener("playerPaused", "clipApp.player.playerPaused");
 	clipApp.kdp.addJsListener("doSeek", "clipApp.onSeek");
@@ -41,7 +42,10 @@ var clipperReady = function() {
 	clipApp.kClip.addJsListener("clipAdded", "clipApp.clipAdded");
 	clipApp.kClip.addJsListener("clipperError", "clipApp.showError");
 	clipApp.kClip.addJsListener("playheadDragStart", "clipApp.clipper.dragStarted");
-	clipApp.kClip.addJsListener("playheadDragDrop", "clipApp.player.updatePlayhead");
+	//if we are during initialization process we will add the handler after
+	if ( !clipApp.player.firstLoad ) {
+		clipApp.kClip.addJsListener("playheadDragDrop", "clipApp.player.updatePlayhead");
+	}
 	//in case kClip was loaded after kdp called "durationChange"
 	if ( clipApp.vars.entry && clipApp.vars.entry.msDuration ) {
 		clipApp.kClip.setDuration(clipApp.vars.entry.msDuration);
@@ -59,19 +63,25 @@ $(function() {
 
 // Contains all player related functions
 clipApp.player = {
-	doFirstPlay: function() {
+	/*doFirstPlay: function() {
 		clipApp.log('doFirstPlay');
 		clipApp.player.firstLoad = true;
 		clipApp.kdp.sendNotification("doPlay");
-	},
+	},*/
 
 	playerPlaying: function() {
 		clipApp.log('clipApp.player.playerPlaying');
 		if( clipApp.player.firstLoad ) {
 			clipApp.log('pauseKdp');
-			clipApp.player.firstLoad = false;
+
 			setTimeout( function() {
+				clipApp.player.firstLoad = false;
 				clipApp.kdp.sendNotification("doPause");
+				//live entry playback starts from the end - seek back to beginning
+				if ( clipApp.vars.entry.mediaType == '201' ) {
+					clipApp.kdp.sendNotification("doSeek", 0);
+				}
+				clipApp.kClip.addJsListener("playheadDragDrop", "clipApp.player.updatePlayhead");
 			}, 50);
 		}
 		clipApp.vars.removeBlackScreen = true;
@@ -83,8 +93,10 @@ clipApp.player = {
 
 	playerPaused: function() {
 		clipApp.vars.playerPlaying = false;
-		clipApp.kClip.addJsListener("playheadUpdated", "clipApp.player.updatePlayhead");
-		clipApp.kdp.removeJsListener("playerUpdatePlayhead", "clipApp.clipper.updatePlayhead");
+		setTimeout( function() {
+			clipApp.kClip.addJsListener("playheadUpdated", "clipApp.player.updatePlayhead");
+			clipApp.kdp.removeJsListener("playerUpdatePlayhead", "clipApp.clipper.updatePlayhead");
+		}, 1);
 	},
 
 	updatePlayhead: function(val) {
@@ -331,6 +343,7 @@ clipApp.onSeek = function(val) {
 	}
 
 	if( clipApp.vars.seekFromKClip === false ) {
+
 		clipApp.clipper.updatePlayhead(val);
 	} else {
 		clipApp.vars.seekFromKClip = false;
@@ -409,6 +422,7 @@ clipApp.doSave = function() {
 		'start': $("#startTime").timeStepper( 'getValue' ),
 		'end': $("#endTime").timeStepper( 'getValue' )
 	};
+	//clipping of live entry should create vod entry
 	if ( params.mediaType == '201' ) {
 		params.mediaType = '1';
 	}
