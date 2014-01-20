@@ -15,7 +15,7 @@ $kdpUrl = $protocol . '://' . $conf['host'] . '/kwidget/wid/_' . $conf['partner_
 // Create Clipper Url & Flashvars
 $clipperUrl = $protocol . '://' . $conf['host'] . '/kgeneric/ui_conf_id/' . $conf['clipper_uiconf_id'];
 //$clipperUrl = "http://localhost/Clipper/bin-debug/KClip.swf?host=http://www.kaltura.com&uiConfId=21224322&cdnHost=cdnbakmi.kaltura.com";
-$clipperFlashvars = '&entry_id=' . $entryId . '&partner_id=' . $conf['partner_id'] . '&host=' . $conf['host'];
+$clipperFlashvars = '&entry_id=' . $entryId . '&partner_id=' . $conf['partner_id'] . '&host=' . $conf['host'] . '&uiconfId=' . $conf['clipper_uiconf_id'];
 $clipperFlashvars .= '&ks=' . $ks . '&show_add_delete_buttons=false&state=clippingState&jsReadyFunc=clipperReady';
 $clipperFlashvars .= '&max_allowed_rows=1&show_control_bar=true&show_message_box=false&protocol=' . $protocol . '://';
 
