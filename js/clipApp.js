@@ -41,7 +41,11 @@ var clipperReady = function() {
 	clipApp.kClip.addJsListener("clipAdded", "clipApp.clipAdded");
 	clipApp.kClip.addJsListener("clipperError", "clipApp.showError");
 	clipApp.kClip.addJsListener("playheadDragStart", "clipApp.clipper.dragStarted");
-	clipApp.kClip.addJsListener("playheadDragDrop", "clipApp.player.updatePlayhead")
+	clipApp.kClip.addJsListener("playheadDragDrop", "clipApp.player.updatePlayhead");
+	//in case kClip was loaded after kdp called "durationChange"
+	if ( clipApp.vars.entry && clipApp.vars.entry.msDuration ) {
+		clipApp.kClip.setDuration(clipApp.vars.entry.msDuration);
+	}
 };
 
 /* Init the App */
