@@ -10,6 +10,10 @@ if( isset($_GET['config']) ) {
 	$configName = 'default';
 }
 
+// kmc default configuration
+if( file_exists('config.kmc.php') )
+	include('config.kmc.php');
+
 // Load local configuration
 if( file_exists('config.local.php') )
 	include('config.local.php');
