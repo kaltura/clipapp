@@ -14,9 +14,6 @@ ClipApp is Kaltura Clipping and Trimming application. The app allows you to trim
 #### In Kaltura Managment Console (KMC)
 
 1. Download specific tag into ```/opt/kaltura/apps/clipapp/{version}```
-2. Rename ```config.kmc.php``` to ```config.local.php``` run: 
+2. Open KMC -> Entry Drilldown -> Trim / Clip
 
-  ```
-  mv config.kmc.php config.local.php
-  ```
-3. Open KMC -> Entry Drilldown -> Trim / Clip
+If you would like to change the settings you can create a config.local.php file with settings specific to your enviornment. 
