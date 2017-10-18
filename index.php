@@ -20,7 +20,7 @@ $clipperFlashvars .= '&ks=' . $ks . '&show_add_delete_buttons=false&state=clippi
 $clipperFlashvars .= '&max_allowed_rows=1&show_control_bar=true&show_message_box=false&protocol=' . $protocol . '://';
 
 if(!$entryId)
-	die(t("Entry Id not found"));
+	die("Entry Id not found");
 
 // Load entry
 try
